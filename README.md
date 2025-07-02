@@ -47,6 +47,7 @@ Uygulama, hekimin seçtiği fetal bulgularla veri tabanındaki sendromlar arası
 [Trello Backlog](https://trello.com/b/U1T5wQXG/prenatal-diagnosis-ai)
 ## User Story
 Senaryo: Deneyimli bir perinatoloji uzmanı olan Dr. Şeyda, detaylı ikinci düzey ultrason muayenesi sırasında fetüste birkaç sıra dışı bulgu tespit eder. Örneğin, fetüsün burun kemiğinin oluşmadığını, kalpte dört odacık görüntüsünde bir anormallik olduğunu ve bacak kemiklerinin gebelik haftasına göre kısa kaldığını gözlemler. Bu bulgular bir dizi genetik sendromu akla getirebilir; ancak her sendromun belirtilerini tek tek hatırlamak güçtür. Dr. Şeyda, hastanede kullanıma yeni sunulan yapay zekâ destekli prenatal tanı uygulamasına giriş yapar:
+
 1.⁠ ⁠Veri Girişi: Uygulamanın arama çubuğu şeklindeki akıllı giriş alanına bulguları yazmaya başlar. “Burun kemiği yokluğu” yazdığında sistem otomatik olarak ilgili tıbbi terimi tanıyıp önerir. Ardından “kısa femur” ve “kalp septal defekti” gibi bulguları da ekler. Girdiği her bulgu, uygulama tarafından doğrulanır ve standart terminolojiye dönüştürülür (ör. “nazal kemik yokluğu” gibi), böylece veri tutarlılığı sağlanır.
 
 2.⁠ ⁠Analiz ve Hesaplama: Dr. Şeyda “Analiz Et” butonuna bastığında, uygulamanın arka plandaki yapay zekâ modeli saniyeler içinde girilen belirtileri işler. Model, geniş bir tıbbi veri tabanındaki genetik sendromları ve onların tipik bulgularını tarayarak, Dr. Şeyda’nın girdiği kombinasyona en çok uyan sendromları tespit eder.
