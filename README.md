@@ -12,9 +12,10 @@
 | Tarık Anafarta      | Developer      | [LinkedIn](https://www.linkedin.com/in/tarik-anafarta)          |
 
 ## Ürün İsmi
+Perisentez
 
 ## Ürün Açıklaması
-Prenatal Diagnosis Assistant, prenatal (doğum öncesi) dönemde ultrason bulgularına göre genetik sendrom tahmini yaparak, uzman hekimlere karar desteği sunan bir yapay zekâ tabanlı asistan sistemidir.
+Prenatal (doğum öncesi) dönemde ultrason bulgularına göre genetik sendrom tahmini yaparak, uzman hekimlere karar desteği sunan bir yapay zekâ tabanlı asistan sistemidir.
 
 Uygulama, hekimin seçtiği fetal bulgularla veri tabanındaki sendromlar arasında benzerlik eşleştirmesi yaparak, olası sendromları sıralar. Bu sayede doğru tanıya daha hızlı ulaşılmasına katkı sağlar. Sistem aynı zamanda bulguların açıklamalarını sunarak, klinik süreci bilgi açısından da destekler.
 ## Ürün Özellikleri
