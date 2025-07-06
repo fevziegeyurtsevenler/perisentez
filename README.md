@@ -70,3 +70,65 @@ Listeleme sonucunda, her sendromun hangi bulgularla eşleştiği ayrı ayrı bel
 
 Hekim bu bilgilerle daha bilinçli yönlendirmeler yapabilir (ör. NIPT, amniyosentez)
 # Sprint 1
+
+### Genel Kararlar ve Kullanılan Araçlar
+
+* **UI Tasarımları:** Sprint 1'de ayrı bir UI tasarım aracı kullanılmamıştır. Kullanıcı arayüzü, doğrudan Streamlit kütüphanesi kullanılarak (`sendrom.py` dosyası içerisinde) kodlanmıştır.
+* **Proje Yönetimi:** Proje yönetimi ve görev takibi için **Trello** platformu aktif olarak kullanılmıştır.
+* **Günlük Scrum Toplantıları:** Takım üyelerinin uygunluğuna göre **WhatsApp** grup sohbetleri ve **Google Meet** video konferansları üzerinden günlük scrum toplantıları gerçekleştirilmiştir.
+* **Uygulama Teması:** Uygulamanın görsel tasarımı için kod içinde belirlendiği üzere **koyu (dark) tema** tercih edilmiştir.
+* **Tasarım ve Uygulama Dili:** Uygulamanın arayüz metinleri ve çıktıları, hedef kitlenin ihtiyaçları doğrultusunda **Türkçe** olarak tasarlanmış ve geliştirilmiştir.
+
+---
+
+### Beklenen Puan Tamamlama
+
+* **Sprint 1 Hedefi:** 300 Puan
+* **Puan Tamamlama Mantığı:**
+    * Projenin genel tamamlanma hedefi 1200 puan olarak belirlenmiştir.
+    * Sprint 1, Perisentez uygulamasının **Minimum Uygulanabilir Ürün (MVP)** aşamasını oluşturduğu için 300 puanlık bir ağırlık verilmiştir.
+    * Bu sprintin ana odak noktaları; projenin fikir aşamasını netleştirmek, ürün özelliklerini detaylandırmak ve temel fonksiyonelliği içeren **çalışır bir prototip (`sendrom.py`)** geliştirmek olmuştur.
+    * Kullanıcı arayüzünün Streamlit ile kodlanması, temel veri giriş mekanizmalarının oluşturulması, kural tabanlı eşleştirme algoritmasının uygulanması ve çıktıların gösterilmesi gibi görevlerin başarıyla tamamlanmasıyla 300 puanlık hedefe ulaşılmıştır.
+    * Toplam 1200 puanlık genel hedefin geri kalan dağılımı şu şekildedir: İkinci sprintte kod yazımına ve API entegrasyonlarına odaklanılacağı için 450 puan, üçüncü sprintte ise kalan görevlerin tamamlanması ve entegrasyon çalışmalarına ayrılacağı için yine 450 puan hedeflenmiştir.
+
+---
+
+### Günlük Scrumlar
+
+* **Sprint 1 Günlük Scrum Özeti:** Günlük scrum toplantıları, takım üyelerinin mevcut ilerlemelerini paylaşmaları, karşılaşılan engelleri tartışmaları ve bir sonraki günün görevlerini belirlemeleri amacıyla düzenli olarak yapılmıştır. Hızlı iletişim ve görev takibi için WhatsApp grubu kullanılırken, daha detaylı tartışmalar ve ekran paylaşımı gerektiren konular için Google Meet tercih edilmiştir.
+
+---
+
+
+### Sprint Değerlendirmesi (Sprint Review)
+
+* **Tamamlanan İşler:**
+    * **Fetal Bulguların Arayüzden Girişi:** Kullanıcı arayüzünde, gebelik haftası, NT, FL, beta-hCG MoM, PAPP-A MoM gibi sayısal prenatal değerler ve önemli yapısal anomaliler (hard marker'lar) için seçim kutuları (checkbox'lar) aracılığıyla veri giriş alanları başarıyla oluşturulmuştur.
+    * **Kural Tabanlı Sendrom Risk Değerlendirmesi:** Girilen sayısal veriler ve seçilen yapısal bulgulara dayanarak, `sendrom.py` modülü içinde tanımlanan tıbbi kurallar ve eşikler kullanılarak olası genetik sendromların riski hesaplanmış ve bu mantık uygulamaya entegre edilmiştir. Her sendrom için "tahmini eşleşme oranı" sunulmaktadır.
+    * **Potansiyel Sendromların Sıralı Listelenmesi:** Hesaplanan eşleşme oranına göre en olası sendromlar azalan sırada listelenmekte ve her bir sendrom için ilişkili girilen bulgular açıkça belirtilerek hekime karar destekleyici bilgi sağlanmaktadır.
+    * **Açıklayıcı ve Uyarıcı Bilgilendirme:** Uygulamanın eğitim amaçlı bir prototip olduğu ve klinik karar verme sürecinin yalnızca uzman doktorlar tarafından yürütülmesi gerektiği vurgulayan uyarı ve açıklamalar arayüze entegre edilmiştir.
+* **Karşılaşılan Zorluklar ve Çıkarımlar:**
+    * Uygulamanın "Yapay Zeka Destekli Asistan Sistem" tanımını mevcut kural tabanlı MVP yapısıyla nasıl dengeleyeceğimiz üzerine ekip içi tartışmalar yaşanmıştır. İlk aşamada güçlü bir kural seti ile ilerlemenin, daha sonra gerçek AI modellerini entegre etmek için sağlam bir temel oluşturacağı kararlaştırılmıştır.
+    * Perisentez'in temel felsefesi olan "klinik karara destek" misyonu üzerinde durularak, uygulamanın bir tanı koyucu olmaktan ziyade, hekimlere bilgi ve yönlendirme sunan bir asistan görevi görmesi gerektiği vurgulanmıştır.
+    * İlk hafta, kullanıcı hikayesi ve kabul kriterleri doğrultusunda veri giriş arayüzünün ve temel kural setinin işleyişi detaylıca planlanmıştır. İkinci hafta ise Streamlit arayüzünün aktif olarak kodlanması ve risk hesaplama mantığının entegrasyonu başarıyla gerçekleştirilmiştir.
+* **Genel Değerlendirme:** Sprint 1, Perisentez projesinin temel işlevsel iskeletini oluşturarak, fikrin çalışır bir prototipe dönüşümü açısından oldukça verimli ve başarılı bir süreç olmuştur.
+
+* **Sprint Değerlendirmesi Katılımcıları:**
+    * Feyza Hilal Şahin (Product Owner)
+    * Fevzi Ege Yurtsevenler (Scrum Master)
+    * Sena Açıkgöz (Developer)
+    * Semanur Büdün (Developer)
+    * Tarık Anafarta (Developer)
+
+---
+
+### Sprint Retrospektifi
+
+* **İkinci Sprint için Kararlar ve İyileştirmeler:**
+    * Daha kapsamlı veri yönetimi ve gelecekteki olası yapay zeka modelleri için **Firebase gibi bir backend çözümünün** araştırılmasına ve entegre edilmesine öncelik verilmesine karar verildi.
+    * Uygulamanın **logosunun ve genel marka kimliğinin** kesinleştirilmesi planlandı.
+    * İkinci sprintte tüm takım üyelerinin **kod geliştirme süreçlerine daha aktif ve eş zamanlı olarak katılmasına** karar verildi.
+    * Yapay zeka eklentisi için uygulamaya uygun, **ücretsiz veya uygun maliyetli API'lerin araştırılması** yapılacak (özellikle daha gelişmiş bulgu eşleştirme veya açıklayıcı AI modelleri için).
+    * Klinik raporların daha kullanıcı dostu olması ve hekimler arası paylaşılabilirliğini artırmak amacıyla **PDF formatında risk raporu dışa aktarma** özelliğinin araştırılmasına karar verildi.
+    * Sendromlara ilişkin **ICD kodları** ve **daha detaylı fenotip tanımlarının** (her sendrom için açıklayıcı bilgiler) veri tabanına eklenmesi ve arayüzde gösterilmesi üzerine çalışılacak.
+    * Gelecek sprintlerde, sayısal bulguların gebelik haftasına göre daha dinamik ve yaşa özgü değerlendirilmesi gibi algoritmik iyileştirmelerin araştırılmasına karar verildi.
