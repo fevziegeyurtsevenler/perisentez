@@ -19,33 +19,23 @@ Prenatal (doğum öncesi) dönemde ultrason bulgularına göre genetik sendrom t
 
 Uygulama, hekimin seçtiği fetal bulgularla veri tabanındaki sendromlar arasında benzerlik eşleştirmesi yaparak, olası sendromları sıralar. Bu sayede doğru tanıya daha hızlı ulaşılmasına katkı sağlar. Sistem aynı zamanda bulguların açıklamalarını sunarak, klinik süreci bilgi açısından da destekler.
 ## Ürün Özellikleri
-- Fetal Bulguların Arayüzden Girişi
+Perisentez, prenatal dönemde ultrason bulgularına göre genetik sendrom tahmini yaparak, uzman hekimlere karar desteği sunan yapay zekâ tabanlı bir asistan sistemidir.
 
-Kullanıcılar, akıllı arama çubuğuna bulguları yazabilir. Otomatik tamamlama (autocomplete) ile medikal terim önerileri sunulur.
+* **Prenatal Ultrason ve Serum Veri Girişi:**
+    * Kullanıcılar, gebelik haftası, ense kalınlığı (NT), femur uzunluğu (FL), serbest beta-hCG MoM ve PAPP-A MoM değerleri gibi sayısal prenatal verileri sisteme girebilir.
+    * Önemli yapısal anomaliler (hard marker'lar) listeden seçilebilir (örneğin, Atriyoventriküler septal defekt, Omfalosel, Holoprozensefali).
 
-- Sendrom-Bulgu Eşleştirme Algoritması
-  
-Yapay zekâ algoritması, girilen bulgular ile veri tabanındaki sendromları benzerlik skorlarına göre eşleştirir. Bu özellik sendrom.py modülüyle sağlanmaktadır.
+* **Kural Tabanlı Sendrom Risk Değerlendirmesi:**
+    * Girilen sayısal değerler ve seçilen yapısal bulgulara dayanarak, önceden tanımlanmış tıbbi kurallar ve eşikler kullanılarak olası genetik sendromların riski hesaplanır.
+    * Sistem, her bir sendrom için sayısal ve yapısal bulguların eşleşme derecesine göre bir "tahmini eşleşme oranı" sunar.
 
-- İlk 3 Olası Sendromun Tahmini
-  
-Sistem, en yüksek benzerlik skoruna sahip 3 sendromu listeler. Her biri için yüzde uyumluluk oranı belirtilir.
+* **Potansiyel Sendromların Sıralı Listelenmesi:**
+    * Hesaplanan eşleşme oranına göre en olası sendromlar azalan sırada listelenir.
+    * Her bir sendrom için eşleşen spesifik bulgular açıkça belirtilir, bu da hekime kararı destekleyici bilgi sağlar.
 
-- Detaylı Sendrom Bilgileri
-  
-Her bir önerilen sendrom için şu bilgiler sunulur:
-
-ICD Kodu
-
-Fenotip Tanımı
-
-Eşleşen Bulgulara Göre Açıklama Notları
-
-- Bilgi Destekli Klinik Karar Sistemi
-  
-Hekimler, sadece sendrom ismini değil; neden bu sendromun önerildiğini de sistemden öğrenebilir. (Explainable AI yaklaşımı)
-
-
+* **Açıklayıcı ve Uyarıcı Bilgilendirme:**
+    * Uygulamanın eğitim amaçlı bir prototip olduğu ve klinik karar alma süreçlerinin yalnızca uzman doktorlar tarafından yürütülmesi gerektiği vurgulanır.
+    * Sistemin kural tabanlı yapısı ve gerçek yapay zeka modellerinin karmaşıklığı hakkında genel bir açıklama sunulur.
 
 ## Hedef Kitle
 - Perinatoloji uzmanları
