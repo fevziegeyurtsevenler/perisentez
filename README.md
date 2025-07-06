@@ -75,6 +75,7 @@ Hekim bu bilgilerle daha bilinçli yönlendirmeler yapabilir (ör. NIPT, amniyos
 **Depoyu Klonlayın:**
 git clone https://github.com/fevziegeyurtsevenler/perisentez.git
 
+
 cd perisentez
 
 **Gerekli Kütüphaneleri Yükleyin:**
