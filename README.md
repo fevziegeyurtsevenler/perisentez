@@ -119,6 +119,15 @@ Hekim bu bilgilerle daha bilinçli yönlendirmeler yapabilir (ör. NIPT, amniyos
     * Sena Açıkgöz (Developer)
     * Semanur Büdün (Developer)
     * Tarık Anafarta (Developer)
+  
+---
+
+### Ekran Görüntüleri
+
+Uygulama ve daily scrumlar ile ilgili ekran görüntüleri:
+
+[Ekran Görüntüleri Albümü](https://imgur.com/a/Bc1tRcg)
+
 
 ---
 
