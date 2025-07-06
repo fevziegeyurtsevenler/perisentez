@@ -73,8 +73,7 @@ Hekim bu bilgilerle daha bilinçli yönlendirmeler yapabilir (ör. NIPT, amniyos
 
 ### Genel Kararlar ve Kullanılan Araçlar
 
-* **UI Tasarımları:** Sprint 1'de ayrı bir UI tasarım aracı kullanılmamıştır. Kullanıcı arayüzü, doğrudan Streamlit kütüphanesi kullanılarak (`perisentez
-*.py` dosyası içerisinde) kodlanmıştır.
+* **UI Tasarımları:** Sprint 1'de ayrı bir UI tasarım aracı kullanılmamıştır. Kullanıcı arayüzü, doğrudan Streamlit kütüphanesi kullanılarak (`perisentez.py` dosyası içerisinde) kodlanmıştır.
 * **Proje Yönetimi:** Proje yönetimi ve görev takibi için **Trello** platformu aktif olarak kullanılmıştır.
 * **Günlük Scrum Toplantıları:** Takım üyelerinin uygunluğuna göre **WhatsApp** grup sohbetleri ve **Google Meet** video konferansları üzerinden günlük scrum toplantıları gerçekleştirilmiştir.
 * **Uygulama Teması:** Uygulamanın görsel tasarımı için kod içinde belirlendiği üzere **koyu (dark) tema** tercih edilmiştir.
