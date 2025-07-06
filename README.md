@@ -73,7 +73,8 @@ Hekim bu bilgilerle daha bilinçli yönlendirmeler yapabilir (ör. NIPT, amniyos
 
 ### Genel Kararlar ve Kullanılan Araçlar
 
-* **UI Tasarımları:** Sprint 1'de ayrı bir UI tasarım aracı kullanılmamıştır. Kullanıcı arayüzü, doğrudan Streamlit kütüphanesi kullanılarak (`sendrom.py` dosyası içerisinde) kodlanmıştır.
+* **UI Tasarımları:** Sprint 1'de ayrı bir UI tasarım aracı kullanılmamıştır. Kullanıcı arayüzü, doğrudan Streamlit kütüphanesi kullanılarak (`perisentez
+*.py` dosyası içerisinde) kodlanmıştır.
 * **Proje Yönetimi:** Proje yönetimi ve görev takibi için **Trello** platformu aktif olarak kullanılmıştır.
 * **Günlük Scrum Toplantıları:** Takım üyelerinin uygunluğuna göre **WhatsApp** grup sohbetleri ve **Google Meet** video konferansları üzerinden günlük scrum toplantıları gerçekleştirilmiştir.
 * **Uygulama Teması:** Uygulamanın görsel tasarımı için kod içinde belirlendiği üzere **koyu (dark) tema** tercih edilmiştir.
@@ -87,7 +88,7 @@ Hekim bu bilgilerle daha bilinçli yönlendirmeler yapabilir (ör. NIPT, amniyos
 * **Puan Tamamlama Mantığı:**
     * Projenin genel tamamlanma hedefi 1200 puan olarak belirlenmiştir.
     * Sprint 1, Perisentez uygulamasının **Minimum Uygulanabilir Ürün (MVP)** aşamasını oluşturduğu için 300 puanlık bir ağırlık verilmiştir.
-    * Bu sprintin ana odak noktaları; projenin fikir aşamasını netleştirmek, ürün özelliklerini detaylandırmak ve temel fonksiyonelliği içeren **çalışır bir prototip (`sendrom.py`)** geliştirmek olmuştur.
+    * Bu sprintin ana odak noktaları; projenin fikir aşamasını netleştirmek, ürün özelliklerini detaylandırmak ve temel fonksiyonelliği içeren **çalışır bir prototip (`perisentez.py`)** geliştirmek olmuştur.
     * Kullanıcı arayüzünün Streamlit ile kodlanması, temel veri giriş mekanizmalarının oluşturulması, kural tabanlı eşleştirme algoritmasının uygulanması ve çıktıların gösterilmesi gibi görevlerin başarıyla tamamlanmasıyla 300 puanlık hedefe ulaşılmıştır.
     * Toplam 1200 puanlık genel hedefin geri kalan dağılımı şu şekildedir: İkinci sprintte kod yazımına ve API entegrasyonlarına odaklanılacağı için 450 puan, üçüncü sprintte ise kalan görevlerin tamamlanması ve entegrasyon çalışmalarına ayrılacağı için yine 450 puan hedeflenmiştir.
 
