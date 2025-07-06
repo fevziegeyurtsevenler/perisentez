@@ -69,6 +69,21 @@ Her sendrom için ICD kodu, fenotip tanımı ve açıklayıcı bilgiler gösteri
 Listeleme sonucunda, her sendromun hangi bulgularla eşleştiği ayrı ayrı belirtilir
 
 Hekim bu bilgilerle daha bilinçli yönlendirmeler yapabilir (ör. NIPT, amniyosentez)
+
+## Kurulum
+
+**Depoyu Klonlayın:**
+git clone [https://github.com/fevziegeyurtsevenler/perisentez.git](https://github.com/fevziegeyurtsevenler/perisentez.git)
+cd perisentez
+
+**Gerekli Kütüphaneleri Yükleyin:**
+pip install -r requirements.txt
+
+**Uygulamayı Başlatın:**
+python3 -m streamlit run perisentez.py
+
+
+
 # Sprint 1
 
 ### Genel Kararlar ve Kullanılan Araçlar
