@@ -73,13 +73,16 @@ Hekim bu bilgilerle daha bilinçli yönlendirmeler yapabilir (ör. NIPT, amniyos
 ## Kurulum
 
 **Depoyu Klonlayın:**
-git clone [https://github.com/fevziegeyurtsevenler/perisentez.git](https://github.com/fevziegeyurtsevenler/perisentez.git)
+git clone https://github.com/fevziegeyurtsevenler/perisentez.git
+
 cd perisentez
 
 **Gerekli Kütüphaneleri Yükleyin:**
+
 pip install -r requirements.txt
 
 **Uygulamayı Başlatın:**
+
 python3 -m streamlit run perisentez.py
 
 
