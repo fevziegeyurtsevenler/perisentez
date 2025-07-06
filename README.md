@@ -122,9 +122,9 @@ Hekim bu bilgilerle daha bilinçli yönlendirmeler yapabilir (ör. NIPT, amniyos
   
 ---
 
-### Ekran Görüntüleri
+### Ekran Görüntüleri ve Kullanım Videosu
 
-Uygulama ve daily scrumlar ile ilgili ekran görüntüleri:
+Uygulama ve daily scrumlar ile ilgili ekran görüntüleri ve kullanım videosu:
 
 [Ekran Görüntüleri Albümü](https://imgur.com/a/Bc1tRcg)
 
