@@ -46,14 +46,23 @@ Uygulama, hekimin seçtiği fetal bulgularla veri tabanındaki sendromlar arası
 ## Product Backlog URL
 [Trello Backlog](https://trello.com/b/U1T5wQXG/prenatal-diagnosis-ai)
 ## User Story
-Senaryo: Deneyimli bir perinatoloji uzmanı olan Dr. Şeyda, detaylı ikinci düzey ultrason muayenesi sırasında fetüste birkaç sıra dışı bulgu tespit eder. Örneğin, fetüsün burun kemiğinin oluşmadığını, kalpte dört odacık görüntüsünde bir anormallik olduğunu ve bacak kemiklerinin gebelik haftasına göre kısa kaldığını gözlemler. Bu bulgular bir dizi genetik sendromu akla getirebilir; ancak her sendromun belirtilerini tek tek hatırlamak güçtür. Dr. Şeyda, hastanede kullanıma yeni sunulan yapay zekâ destekli prenatal tanı uygulamasına giriş yapar:
+Kullanıcı Tipi: Perinatoloji Uzmanı (Dr. Şeyda)
 
-1.⁠ ⁠Veri Girişi: Uygulamanın arama çubuğu şeklindeki akıllı giriş alanına bulguları yazmaya başlar. “Burun kemiği yokluğu” yazdığında sistem otomatik olarak ilgili tıbbi terimi tanıyıp önerir. Ardından “kısa femur” ve “kalp septal defekti” gibi bulguları da ekler. Girdiği her bulgu, uygulama tarafından doğrulanır ve standart terminolojiye dönüştürülür (ör. “nazal kemik yokluğu” gibi), böylece veri tutarlılığı sağlanır.
+User Story:
 
-2.⁠ ⁠Analiz ve Hesaplama: Dr. Şeyda “Analiz Et” butonuna bastığında, uygulamanın arka plandaki yapay zekâ modeli saniyeler içinde girilen belirtileri işler. Model, geniş bir tıbbi veri tabanındaki genetik sendromları ve onların tipik bulgularını tarayarak, Dr. Şeyda’nın girdiği kombinasyona en çok uyan sendromları tespit eder.
+“Bir perinatoloji uzmanı olarak, detaylı ultrason muayenesinde tespit ettiğim fetal bulguları sisteme girerek bu bulgularla en çok eşleşen genetik sendromların listesini görmek istiyorum. Böylece olası tanıları daha hızlı değerlendirebilir ve hastaya en uygun ileri test ve yönlendirmeyi yapabilirim.”
 
-3.⁠ ⁠Karar Desteği Çıktısı: Ekranda olası sendromların bir listesi belirir. Örneğin, Down Sendromu (Trizomi 21) için %85 eşleşme olasılığı, DiGeorge Sendromu (22q11 delesyonu) için %60 olasılık, ve birkaç daha nadir sendrom için daha düşük yüzdeler gösterilir. Uygulama, her sendromun Dr. Şeyda’nın girdiği bulgularla hangi yönlerden eşleştiğini açıklayan kısa notlar da sunar (örn. Down sendromunda nazal kemik yokluğu ve kardiyak defekt sık görülür). Bu sayede Dr. Şeyda, listelenen sendrom adaylarının hangi bulgular nedeniyle öne çıktığını anında kavrar.
+Kabul Kriterleri:
 
-4.⁠ ⁠İleri Adımlar: Dr. Şeyda, yapay zekânın sunduğu bu ön tanı destek listesini kendi klinik deneyimiyle birleştirerek hastaya en uygun danışmanlığı verir. Örneğin yüksek olasılıklı Down sendromu ihtimaline karşı amniyosentez veya NIPT gibi ileri genetik tetkikleri önerir. Daha nadir görülen ancak listede çıkan bir sendrom varsa, o sendromla ilişkili ekstra taramaları planlar veya genetik danışmanlık alır. Uygulama, Dr. Şeyda’ya unuttuğu veya nadir rastlanan bir sendromu hatırlatarak kritik bir katkı sunmuştur.
-Bu kullanıcı senaryosunda görüldüğü gibi sistemimiz, kullanım kolaylığı, hızlı geri dönüş ve güvenilir öneriler ile klinik akışı bozmadan doktorun karar alma sürecine entegre olur. Sonuç olarak, anne karnındaki bebeğin durumu hakkında daha kapsamlı bir öngörü elde edilmesini ve doğru yönlendirmelerin yapılmasını sağlar.
+Kullanıcı, arama çubuğuna bulguları yazabilir ve sistem otomatik tamamlama önerileri sunar
+
+Girilen her bulgu sistem tarafından doğrulanarak standart tıbbi terimlere dönüştürülür
+
+"Analiz Et" butonuna basıldığında sistem ilk 3 olası sendromu benzerlik oranları ile sıralar
+
+Her sendrom için ICD kodu, fenotip tanımı ve açıklayıcı bilgiler gösterilir
+
+Listeleme sonucunda, her sendromun hangi bulgularla eşleştiği ayrı ayrı belirtilir
+
+Hekim bu bilgilerle daha bilinçli yönlendirmeler yapabilir (ör. NIPT, amniyosentez)
 # Sprint 1
