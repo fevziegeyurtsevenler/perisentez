@@ -19,13 +19,17 @@ Prenatal (doğum öncesi) dönemde ultrason bulgularına göre genetik sendrom t
 
 Uygulama, hekimin seçtiği fetal bulgularla veri tabanındaki sendromlar arasında benzerlik eşleştirmesi yaparak, olası sendromları sıralar. Bu sayede doğru tanıya daha hızlı ulaşılmasına katkı sağlar. Sistem aynı zamanda bulguların açıklamalarını sunarak, klinik süreci bilgi açısından da destekler.
 ## Ürün Özellikleri
-Fetal Bulguların Arayüzden GirişiKullanıcılar, akıllı arama çubuğuna bulguları yazabilir. Otomatik tamamlama (autocomplete) ile medikal terim önerileri sunulur.
+- Fetal Bulguların Arayüzden Girişi
+Kullanıcılar, akıllı arama çubuğuna bulguları yazabilir. Otomatik tamamlama (autocomplete) ile medikal terim önerileri sunulur.
 
-Sendrom-Bulgu Eşleştirme AlgoritmasıYapay zekâ algoritması, girilen bulgular ile veri tabanındaki sendromları benzerlik skorlarına göre eşleştirir. Bu özellik sendrom.py modülüyle sağlanmaktadır.
+- Sendrom-Bulgu Eşleştirme Algoritması
+Yapay zekâ algoritması, girilen bulgular ile veri tabanındaki sendromları benzerlik skorlarına göre eşleştirir. Bu özellik sendrom.py modülüyle sağlanmaktadır.
 
-İlk 3 Olası Sendromun TahminiSistem, en yüksek benzerlik skoruna sahip 3 sendromu listeler. Her biri için yüzde uyumluluk oranı belirtilir.
+- İlk 3 Olası Sendromun Tahmini
+Sistem, en yüksek benzerlik skoruna sahip 3 sendromu listeler. Her biri için yüzde uyumluluk oranı belirtilir.
 
-Detaylı Sendrom BilgileriHer bir önerilen sendrom için şu bilgiler sunulur:
+- Detaylı Sendrom Bilgileri
+Her bir önerilen sendrom için şu bilgiler sunulur:
 
 ICD Kodu
 
@@ -33,7 +37,8 @@ Fenotip Tanımı
 
 Eşleşen Bulgulara Göre Açıklama Notları
 
-Bilgi Destekli Klinik Karar SistemiHekimler, sadece sendrom ismini değil; neden bu sendromun önerildiğini de sistemden öğrenebilir. (Explainable AI yaklaşımı)
+- Bilgi Destekli Klinik Karar Sistemi
+Hekimler, sadece sendrom ismini değil; neden bu sendromun önerildiğini de sistemden öğrenebilir. (Explainable AI yaklaşımı)
 
 
 
