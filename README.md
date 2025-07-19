@@ -70,21 +70,9 @@ Listeleme sonucunda, her sendromun hangi bulgularla eşleştiği ayrı ayrı bel
 
 Hekim bu bilgilerle daha bilinçli yönlendirmeler yapabilir (ör. NIPT, amniyosentez)
 
-## Kurulum
+## Kullanım
 
-**Depoyu Klonlayın:**
-git clone https://github.com/fevziegeyurtsevenler/perisentez.git
-
-
-cd perisentez
-
-**Gerekli Kütüphaneleri Yükleyin:**
-
-pip install -r requirements.txt
-
-**Uygulamayı Başlatın:**
-
-python3 -m streamlit run perisentez.py
+Bu linkten ürünümüzü kullanabilirsiniz : https://perisentez.streamlit.app/
 
 
 
