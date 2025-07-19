@@ -149,6 +149,7 @@ Uygulama ve daily scrumlar ile ilgili ekran görüntüleri ve kullanım videosu:
     * Sendromlara ilişkin **ICD kodları** ve **daha detaylı fenotip tanımlarının** (her sendrom için açıklayıcı bilgiler) veri tabanına eklenmesi ve arayüzde gösterilmesi üzerine çalışılacak.
     * Gelecek sprintlerde, sayısal bulguların gebelik haftasına göre daha dinamik ve yaşa özgü değerlendirilmesi gibi algoritmik iyileştirmelerin araştırılmasına karar verildi.
 
+---
 
 ##  Sprint 2 
 
