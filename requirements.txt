@@ -1,3 +1,6 @@
 streamlit
 pandas
-numpy
+scikit-learn
+joblib
+fpdf
+matplotlib
