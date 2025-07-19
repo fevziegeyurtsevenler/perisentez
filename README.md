@@ -151,7 +151,7 @@ Uygulama ve daily scrumlar ile ilgili ekran görüntüleri ve kullanım videosu:
 
 ---
 
-##  Sprint 2 
+# Sprint 2 
 
 ###  Sprint Amacı
 Sprint 2’nin amacı, MVP olarak çalışan kural tabanlı sistemin üzerine **makine öğrenmesi modeli**, **hasta geçmişi yönetimi**, **PDF raporlama** ve **yapay zeka açıklamaları** ekleyerek ürünü klinik kullanıma daha uygun hale getirmekti.
