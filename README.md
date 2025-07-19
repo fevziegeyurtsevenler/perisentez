@@ -221,15 +221,6 @@ Sprint 2’nin amacı, MVP olarak çalışan kural tabanlı sistemin üzerine **
 
 ---
 
-### 🔜 Sprint 3 Planı (Özet)
-
-* ☁️ Firebase veya Supabase entegrasyonu
-* 🤖 XGBoost veya LLM modellerle doğruluk artırımı
-* 📱 Mobil uyumlu tasarım
-* 📽️ Tanıtım ve eğitim videosu çekimi
-* 🧪 Klinik test senaryoları ile pilot uygulama
-
----
 
 ### 👨‍⚕️ Kullanıcı Deneyimi Artışı
 
