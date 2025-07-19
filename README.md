@@ -151,72 +151,73 @@ Uygulama ve daily scrumlar ile ilgili ekran görüntüleri ve kullanım videosu:
 
 ---
 
-# Sprint 2 
+# Sprint 2
 
-###  Sprint Amacı
+### 📌 Sprint Amacı
 Sprint 2’nin amacı, MVP olarak çalışan kural tabanlı sistemin üzerine **makine öğrenmesi modeli**, **hasta geçmişi yönetimi**, **PDF raporlama** ve **yapay zeka açıklamaları** ekleyerek ürünü klinik kullanıma daha uygun hale getirmekti.
 
 ---
 
-### ✅ Tamamlanan Geliştirmeler
+### ✅ Tamamlanan İşler
 
-* **🔍 Makine Öğrenmesi Modeli Entegrasyonu:**
-    * Eğitimli `RandomForestClassifier` modeli entegre edildi.
-    * `joblib` ile encoder ve feature order dosyaları yüklendi.
-    * Tahmin çıktıları artık olasılık yüzdeleri ve sınıf isimleriyle geliyor.
-
-* **🧠 Yapay Zeka Yorumlayıcı:**
-    * Tahmin sonucuna göre otomatik açıklama üreten `generate_explanation()` fonksiyonu geliştirildi.
-    * Riskli bulgular tespit edilip sistem hekimle yorum paylaşıyor.
-
-* **📄 PDF Raporlama Özelliği:**
-    * Tahmin sonuçları, olasılıklar ve yorumlarla birlikte PDF formatında dışa aktarılabiliyor.
-    * Raporlarda doktor ve tarih bilgisi de yer alıyor.
-
-* **💾 SQLite Hasta Veritabanı:**
-    * Kullanıcı bazlı hasta kayıtları artık `perisentez.db` dosyasında saklanıyor.
-    * Giriş yapan her kullanıcı yalnızca kendi kayıtlarını görebiliyor.
-
-* **🔐 Giriş / Kayıt Sistemi:**
-    * Şifrelenmiş kullanıcı verisi saklayan sistem eklendi.
-    * Yeni kullanıcılar kayıt olabilir, mevcut kullanıcılar güvenli şekilde giriş yapabilir.
-
-* **🗂️ Gelişmiş Hasta Geçmişi Paneli:**
-    * PDF indir, detay görüntüle, arama yap, hasta sil gibi özellikler arayüze entegre edildi.
-    * Arayüz tasarımı daha okunabilir ve tıbbi kullanıma uygun hale getirildi.
+- 🔍 **Makine Öğrenmesi Modeli Entegrasyonu**  
+  ...
+- 🧠 **Yapay Zeka Yorumlayıcı**
+  ...
+- 📄 **PDF Raporlama Özelliği**
+  ...
+- 💾 **SQLite Hasta Veritabanı**
+  ...
+- 🔐 **Giriş / Kayıt Sistemi**
+  ...
+- 🗂️ **Hasta Geçmişi Paneli**
+  ...
 
 ---
 
-### 🛠️ Kullanılan Teknolojiler
+### 🧩 Karşılaşılan Zorluklar ve Çıkarımlar
 
-| Teknoloji         | Açıklama                                    |
-|------------------|---------------------------------------------|
-| **Python**        | Temel programlama dili                      |
-| **Streamlit**     | Web arayüzü                                 |
-| **scikit-learn**  | Model eğitimi ve tahmin süreci              |
-| **SQLite**        | Kalıcı hasta verisi                         |
-| **joblib**        | Model/encoder dosyalarının yüklenmesi       |
-| **FPDF**          | PDF rapor oluşturma                         |
-| **Matplotlib**    | Grafiksel gösterim                          |
+- SQLite ile kullanıcı bazlı veri ayırma sırasında dosya izinleri ve platform farkları dikkate alındı.
+- Streamlit Cloud üzerinde **kalıcı dosya saklama desteği olmaması** sebebiyle SQLite entegrasyonu özellikle tercih edildi.
+- Yapay zekâ açıklamalarının **tıbbi olarak yanıltıcı olmaması** için açıklamalar sade ve veri temelli tutuldu.
 
 ---
 
-### 📌 Değerlendirme
+### 🧪 Günlük Scrumlar
 
-* Yapay zekâ desteğiyle sistem yalnızca öneri sunmuyor, aynı zamanda **yorumlama** yeteneğine de kavuştu.
-* PDF ile çıktılar paylaşılabilir hale getirildi.
-* Veriler artık kalıcı, kullanıcıya özgü ve güvenli olarak saklanıyor.
-* Klinik karar destek sistemine dönüşüm hızlandı.
+- Scrum toplantıları yine WhatsApp + Google Meet üzerinden yapıldı.
+- Her üye kendi geliştirdiği modülü takım arkadaşlarına canlı olarak göstererek entegre etti.
+- PDF çıktısı, yorumlayıcı yapay zekâ fonksiyonu gibi modüller demo ortamında test edildi.
+
+---
+
+### 📈 Puanlandırma
+
+- **Sprint 2 Hedefi:** 450 Puan
+- **Tamamlanan Tahmini Puan:** 470 Puan
+- **Açıklama:**
+  - ML modeli + veri yönetimi (200 puan)
+  - PDF raporlama + grafikler (120 puan)
+  - Kullanıcı yönetimi + geçmiş (100 puan)
+  - Bonus: Yapay zekâ açıklayıcı modül + görsel iyileştirme (50 puan)
 
 ---
 
+### 🔁 Sprint Retrospektifi
 
-### 👨‍⚕️ Kullanıcı Deneyimi Artışı
-
-* Sistem artık doktorun tahminine sadece oran değil, **gerekçe** de sunuyor.
-* Arayüzde sezgisel akış ve görsel okunabilirlik artırıldı.
-* Geçmiş hastalara erişim, PDF paylaşımı ve detay takibiyle sistem çok daha **profesyonel** hale getirildi.
+- **İyileşen Noktalar:**
+  - Kullanıcı verisi artık **kalıcı**, güvenli ve kullanıcıya özel.
+  - Sistem, sadece sonuç değil artık **neden** sorusuna da yanıt veriyor.
+  - UI/UX gözle görülür biçimde gelişti.
+- **İleriye Yönelik Kararlar:**
+  - 3. sprintte kullanıcı dostu dashboard, filtreleme, çoklu hasta seçimi gibi gelişmiş UI özellikleri eklenmesi planlanıyor.
+  - E-posta ile PDF gönderimi ve rapor paylaşımı için altyapı tasarlanacak.
 
 ---
+
+### 📌 Genel Değerlendirme
+
+Sprint 2, Perisentez projesini MVP seviyesinden çıkarıp klinik kullanıma daha uygun bir hale getirmiştir. Özellikle PDF çıktısı, yapay zekâ açıklamaları ve hasta geçmişinin kalıcı tutulması sayesinde sistem artık sadece bir tahmin aracı değil, profesyonel bir klinik yardımcı sistemdir.
+
 
 
