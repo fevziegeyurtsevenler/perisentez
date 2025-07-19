@@ -160,3 +160,83 @@ Uygulama ve daily scrumlar ile ilgili ekran görüntüleri ve kullanım videosu:
     * Klinik raporların daha kullanıcı dostu olması ve hekimler arası paylaşılabilirliğini artırmak amacıyla **PDF formatında risk raporu dışa aktarma** özelliğinin araştırılmasına karar verildi.
     * Sendromlara ilişkin **ICD kodları** ve **daha detaylı fenotip tanımlarının** (her sendrom için açıklayıcı bilgiler) veri tabanına eklenmesi ve arayüzde gösterilmesi üzerine çalışılacak.
     * Gelecek sprintlerde, sayısal bulguların gebelik haftasına göre daha dinamik ve yaşa özgü değerlendirilmesi gibi algoritmik iyileştirmelerin araştırılmasına karar verildi.
+
+
+##  Sprint 2 
+
+###  Sprint Amacı
+Sprint 2’nin amacı, MVP olarak çalışan kural tabanlı sistemin üzerine **makine öğrenmesi modeli**, **hasta geçmişi yönetimi**, **PDF raporlama** ve **yapay zeka açıklamaları** ekleyerek ürünü klinik kullanıma daha uygun hale getirmekti.
+
+---
+
+### ✅ Tamamlanan Geliştirmeler
+
+* **🔍 Makine Öğrenmesi Modeli Entegrasyonu:**
+    * Eğitimli `RandomForestClassifier` modeli entegre edildi.
+    * `joblib` ile encoder ve feature order dosyaları yüklendi.
+    * Tahmin çıktıları artık olasılık yüzdeleri ve sınıf isimleriyle geliyor.
+
+* **🧠 Yapay Zeka Yorumlayıcı:**
+    * Tahmin sonucuna göre otomatik açıklama üreten `generate_explanation()` fonksiyonu geliştirildi.
+    * Riskli bulgular tespit edilip sistem hekimle yorum paylaşıyor.
+
+* **📄 PDF Raporlama Özelliği:**
+    * Tahmin sonuçları, olasılıklar ve yorumlarla birlikte PDF formatında dışa aktarılabiliyor.
+    * Raporlarda doktor ve tarih bilgisi de yer alıyor.
+
+* **💾 SQLite Hasta Veritabanı:**
+    * Kullanıcı bazlı hasta kayıtları artık `perisentez.db` dosyasında saklanıyor.
+    * Giriş yapan her kullanıcı yalnızca kendi kayıtlarını görebiliyor.
+
+* **🔐 Giriş / Kayıt Sistemi:**
+    * Şifrelenmiş kullanıcı verisi saklayan sistem eklendi.
+    * Yeni kullanıcılar kayıt olabilir, mevcut kullanıcılar güvenli şekilde giriş yapabilir.
+
+* **🗂️ Gelişmiş Hasta Geçmişi Paneli:**
+    * PDF indir, detay görüntüle, arama yap, hasta sil gibi özellikler arayüze entegre edildi.
+    * Arayüz tasarımı daha okunabilir ve tıbbi kullanıma uygun hale getirildi.
+
+---
+
+### 🛠️ Kullanılan Teknolojiler
+
+| Teknoloji         | Açıklama                                    |
+|------------------|---------------------------------------------|
+| **Python**        | Temel programlama dili                      |
+| **Streamlit**     | Web arayüzü                                 |
+| **scikit-learn**  | Model eğitimi ve tahmin süreci              |
+| **SQLite**        | Kalıcı hasta verisi                         |
+| **joblib**        | Model/encoder dosyalarının yüklenmesi       |
+| **FPDF**          | PDF rapor oluşturma                         |
+| **Matplotlib**    | Grafiksel gösterim                          |
+
+---
+
+### 📌 Değerlendirme
+
+* Yapay zekâ desteğiyle sistem yalnızca öneri sunmuyor, aynı zamanda **yorumlama** yeteneğine de kavuştu.
+* PDF ile çıktılar paylaşılabilir hale getirildi.
+* Veriler artık kalıcı, kullanıcıya özgü ve güvenli olarak saklanıyor.
+* Klinik karar destek sistemine dönüşüm hızlandı.
+
+---
+
+### 🔜 Sprint 3 Planı (Özet)
+
+* ☁️ Firebase veya Supabase entegrasyonu
+* 🤖 XGBoost veya LLM modellerle doğruluk artırımı
+* 📱 Mobil uyumlu tasarım
+* 📽️ Tanıtım ve eğitim videosu çekimi
+* 🧪 Klinik test senaryoları ile pilot uygulama
+
+---
+
+### 👨‍⚕️ Kullanıcı Deneyimi Artışı
+
+* Sistem artık doktorun tahminine sadece oran değil, **gerekçe** de sunuyor.
+* Arayüzde sezgisel akış ve görsel okunabilirlik artırıldı.
+* Geçmiş hastalara erişim, PDF paylaşımı ve detay takibiyle sistem çok daha **profesyonel** hale getirildi.
+
+---
+
+
