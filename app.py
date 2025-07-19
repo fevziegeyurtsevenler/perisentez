@@ -22,7 +22,7 @@ def sanitize_text(text):
 
 # --- FPDF için Türkçe karakter desteği ---
 # Font dosyasının tam yolunu buraya yazın
-FONT_PATH = "/Users/fevziege/Desktop/sprint2-timpossiblr/DejaVu_Sans/DejaVuSansCondensed.ttf" #
+FONT_PATH = "DejaVuSansCondensed.ttf" #
 FONT_NAME = "DejaVuSansCondensed"     # Fontun FPDF içindeki adı
 
 class PDF(FPDF):
