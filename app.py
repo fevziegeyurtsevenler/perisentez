@@ -9,19 +9,6 @@ import matplotlib.pyplot as plt
 from fpdf import FPDF # fpdf2 kütüphanesini kullanıyoruz
 from datetime import datetime
 
-if submitted:
-    df_input = ...
-    probs = model.predict_proba(df_input)[0]
-    classes = target_encoder.inverse_transform(model.classes_)
-    df_probs = pd.DataFrame({ ... })
-    top_class = ...
-    top_prob = ...
-
-    st.success(...)
-    st.markdown("#### 🔎 Diğer Olasılıklar:")
-    other_probs = df_probs[df_probs["Sendrom"] != top_class]
-    for _, row in other_probs.iterrows():
-        st.markdown(f"- {row['Sendrom']}: **%{row['Olasılık (%)']}**")
 
 # Türkçe karakterleri PDF'e uyumlu hale getirir
 def sanitize_text(text):
