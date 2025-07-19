@@ -1,36 +1,15 @@
-
 import streamlit as st
 import pandas as pd
 import joblib
 import uuid
-from datetime import datetime
-from fpdf import FPDF
 import os
 import hashlib
+import sqlite3
 import matplotlib.pyplot as plt
+from fpdf import FPDF # fpdf2 kütüphanesini kullanıyoruz
+from datetime import datetime
 
-st.set_page_config(page_title="Perisentez", page_icon="🧬", layout="centered")
-
-if "authenticated" not in st.session_state:
-    st.session_state.authenticated = False
-if "username" not in st.session_state:
-    st.session_state.username = None
-
-USER_FILE = "users.csv"
-if not os.path.exists(USER_FILE):
-    pd.DataFrame(columns=["username", "password"]).to_csv(USER_FILE, index=False)
-
-def load_users():
-    return pd.read_csv(USER_FILE)
-
-def save_user(username, password):
-    df = load_users()
-    df = pd.concat([df, pd.DataFrame([{"username": username, "password": password}])], ignore_index=True)
-    df.to_csv(USER_FILE, index=False)
-
-def hash_password(pw):
-    return hashlib.sha256(pw.encode()).hexdigest()
-
+# Türkçe karakterleri PDF'e uyumlu hale getirir
 def sanitize_text(text):
     return (text
         .replace("ı", "i").replace("İ", "I")
@@ -41,222 +20,425 @@ def sanitize_text(text):
         .replace("ö", "o").replace("Ö", "O")
     )
 
+# --- FPDF için Türkçe karakter desteği ---
+# Font dosyasının tam yolunu buraya yazın
+FONT_PATH = "/Users/fevziege/Desktop/sprint2-timpossiblr/DejaVu_Sans/DejaVuSansCondensed.ttf" #
+FONT_NAME = "DejaVuSansCondensed"     # Fontun FPDF içindeki adı
+
+class PDF(FPDF):
+    def __init__(self):
+        super().__init__()
+        # uni=True Türkçe (UTF-8) karakter desteği için kritik
+        try:
+            self.add_font(FONT_NAME, '', FONT_PATH, uni=True)
+            self.set_font(FONT_NAME, '', 12)
+        except Exception as e:
+            st.error(f"Font yüklenirken bir hata oluştu. Lütfen '{FONT_PATH}' dosyasının doğru yolda olduğundan emin olun ve erişilebilirliğini kontrol edin. Hata: {e}")
+            # Hata durumunda varsayılan bir fona geri dönebilir veya uygulamayı durdurabiliriz.
+            self.set_font("Arial", '', 12) # Yedek font
+            st.stop() # Font hatası kritik olduğu için uygulamayı durdurabiliriz.
+
+    def chapter_title(self, title):
+        self.set_font(FONT_NAME, '', 14)
+        self.multi_cell(0, 10, txt=title, align='C')
+        self.ln(5)
+
+    def chapter_body(self, body):
+        self.set_font(FONT_NAME, '', 12)
+        self.multi_cell(0, 8, txt=body)
+        self.ln()
+
+# === Yorumlayıcı AI Açıklaması ===
+def generate_explanation(values, predicted_syndrome):
+    comments = []
+
+    # Genel risk faktörleri
+    if values["NT (Ense kalınlığı)"] > 3.5:
+        comments.append(f"Ense kalınlığı {values['NT (Ense kalınlığı)']} mm olarak ölçülmüş, bu değer 3.5 mm üzeri olup nöral tüp defekti veya trizomilerle ilişkili olabilir.")
+
+    if values["PAPP-A"] < 0.5:
+        comments.append(f"PAPP-A seviyesi {values['PAPP-A']} MoM ile düşüktür; bu durum Down sendromu riskini artırabilir.")
+
+    if values["β-hCG"] > 2.0:
+        comments.append(f"β-hCG değeri {values['β-hCG']} MoM ile normalin üzerindedir, bu da trizomi 21 (Down) ile uyumlu olabilir.")
+
+    if values["FL (Femur uzunluğu)"] < 15:
+        comments.append(f"Femur uzunluğu {values['FL (Femur uzunluğu)']} mm olarak ölçülmüş ve kısa olması kemik gelişim bozukluklarına işaret edebilir.")
+
+    # Modele göre spesifik yorumlar
+    if predicted_syndrome == "Patau":
+        patau_specific_findings = []
+        if values.get("Holoprosensefali") == "Var":
+            patau_specific_findings.append("Holoprosensefali (ön beynin bölünmemesi)")
+        if values.get("Yarık damak/dudak") == "Var":
+            patau_specific_findings.append("Yarık damak/dudak")
+        if values.get("Polidaktili") == "Var":
+            patau_specific_findings.append("Polidaktili (fazla parmak)")
+        if values.get("Kardiyak defekt") == "Var":
+            patau_specific_findings.append("Kardiyak defekt")
+        if values.get("Mikrosefali") == "Var":
+            patau_specific_findings.append("Mikrosefali (küçük baş)")
+        
+        if patau_specific_findings:
+            comments.append(f"Tahmin edilen Patau sendromu ile uyumlu olarak şu bulgulara rastlanmıştır: {', '.join(patau_specific_findings)}.")
+        else:
+            comments.append("Tahmin edilen Patau sendromu için spesifik bir genetik veya yapısal bulguya rastlanmamıştır. Ancak klinik bulgular ve diğer testler daha kapsamlı bir değerlendirme gerektirebilir.")
+    
+    elif predicted_syndrome == "Down":
+        down_specific_findings = []
+        if values.get("NT (Ense kalınlığı)") and values["NT (Ense kalınlığı)"] > 3.5:
+             down_specific_findings.append("Artmış ense kalınlığı")
+        if values.get("Kardiyak defekt") == "Var":
+            down_specific_findings.append("Kardiyak defekt")
+        if values.get("IUGR") == "Var":
+            down_specific_findings.append("IUGR (intrauterin gelişme geriliği)")
+        if values.get("PAPP-A") and values["PAPP-A"] < 0.5:
+            down_specific_findings.append("Düşük PAPP-A seviyesi")
+        if values.get("β-hCG") and values["β-hCG"] > 2.0:
+            down_specific_findings.append("Yüksek β-hCG seviyesi")
+
+        if down_specific_findings:
+            comments.append(f"Tahmin edilen Down sendromu ile uyumlu olarak şu bulgulara rastlanmıştır: {', '.join(down_specific_findings)}.")
+        else:
+            comments.append("Tahmin edilen Down sendromu için spesifik bir bulguya rastlanmamıştır. Ancak klinik bulgular ve diğer testler daha kapsamlı bir değerlendirme gerektirebilir.")
+    
+    # Diğer sendromlar için de benzer if/elif blokları eklenebilir
+    # Örneğin: Edward sendromu için yorumlar
+    elif predicted_syndrome == "Edward":
+        edward_specific_findings = []
+        if values.get("IUGR") == "Var":
+            edward_specific_findings.append("IUGR (intrauterin gelişme geriliği)")
+        if values.get("Kardiyak defekt") == "Var":
+            edward_specific_findings.append("Kardiyak defekt")
+        if values.get("Polikistik böbrek") == "Var":
+            edward_specific_findings.append("Polikistik böbrek")
+        if values.get("Omfalosel") == "Var":
+            edward_specific_findings.append("Omfalosel")
+        
+        if edward_specific_findings:
+            comments.append(f"Tahmin edilen Edward sendromu ile uyumlu olarak şu bulgulara rastlanmıştır: {', '.join(edward_specific_findings)}.")
+        else:
+            comments.append("Tahmin edilen Edward sendromu için spesifik bir bulguya rastlanmamıştır. Ancak klinik bulgular ve diğer testler daha kapsamlı bir değerlendirme gerektirebilir.")
+    
+    # DiGeorge sendromu için yorumlar
+    elif predicted_syndrome == "DiGeorge":
+        digeorge_specific_findings = []
+        if values.get("Kardiyak defekt") == "Var":
+            digeorge_specific_findings.append("Kardiyak defekt")
+        if values.get("Yarık damak/dudak") == "Var":
+            digeorge_specific_findings.append("Yarık damak/dudak")
+        if values.get("Mikrosefali") == "Var":
+            digeorge_specific_findings.append("Mikrosefali")
+        
+        if digeorge_specific_findings:
+            comments.append(f"Tahmin edilen DiGeorge sendromu ile uyumlu olarak şu bulgulara rastlanmıştır: {', '.join(digeorge_specific_findings)}.")
+        else:
+            comments.append("Tahmin edilen DiGeorge sendromu için spesifik bir bulguya rastlanmamıştır. Ancak klinik bulgular ve diğer testler daha kapsamlı bir değerlendirme gerektirebilir.")
+
+    if comments:
+        explanation = "📌 **Yorum:** " + " ".join(comments)
+    else:
+        explanation = "ℹ️ Belirgin bir risk faktörü tespit edilmedi veya girilen verilerle doğrudan spesifik bir sendromla ilişkilendirilebilecek yeterli bulguya ulaşılamadı. Yapay zeka genel verilerle değerlendirme yapmıştır."
+    return explanation
+
+
+# 📁 Perisentez - Tam Sürüm (Konuşmalara Göre Optimize Edilmiş)
+# Özellikler:
+# - Giriş / Kayıt
+# - SQLite veri saklama
+# - Yapay zeka destekli tahmin (joblib modeli)
+# - Hasta geçmişi yönetimi
+# - PDF raporlama
+# - Olasılık grafiği + metin çıktısı
+# - Arama, silme, detay gösterimi
+
+st.set_page_config(page_title="Perisentez", page_icon="🧬", layout="centered")
+
+DB_PATH = "perisentez.db"
+
+def init_db():
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("CREATE TABLE IF NOT EXISTS users (username TEXT PRIMARY KEY, password TEXT)")
+    c.execute("""CREATE TABLE IF NOT EXISTS patients (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT,
+        patient_name TEXT,
+        prediction TEXT,
+        probability TEXT,
+        date TEXT,
+        pdf_file TEXT
+    )""")
+    conn.commit()
+    conn.close()
+
+init_db()
+
+# === Kullanıcı Oturumu ===
+if "authenticated" not in st.session_state:
+    st.session_state.authenticated = False
+if "username" not in st.session_state:
+    st.session_state.username = None
+
+def hash_password(pw):
+    return hashlib.sha256(pw.encode()).hexdigest()
+
+def register_user(username, pw_hash):
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    try:
+        c.execute("INSERT INTO users VALUES (?, ?)", (username, pw_hash))
+        conn.commit()
+        return True
+    except:
+        return False
+    finally:
+        conn.close()
+
+def validate_login(username, pw_hash):
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("SELECT * FROM users WHERE username=? AND password=?", (username, pw_hash))
+    result = c.fetchone()
+    conn.close()
+    return result
+
+def save_patient(username, name, pred, prob, pdf_file):
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("INSERT INTO patients (username, patient_name, prediction, probability, date, pdf_file) VALUES (?, ?, ?, ?, ?, ?)",
+              (username, name, pred, f"%{prob:.1f}", datetime.now().strftime("%Y-%m-%d %H:%M"), pdf_file))
+    conn.commit()
+    conn.close()
+
+def load_patients(username, search=None):
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    if search:
+        c.execute("SELECT * FROM patients WHERE username = ? AND LOWER(patient_name) LIKE ? ORDER BY date DESC", (username, f"%{search.lower()}%"))
+    else:
+        c.execute("SELECT * FROM patients WHERE username = ? ORDER BY date DESC", (username,))
+    rows = c.fetchall()
+    conn.close()
+    return rows
+
+def delete_patient(pid):
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("DELETE FROM patients WHERE id = ?", (pid,))
+    conn.commit()
+    conn.close()
+
+# PDF oluşturma fonksiyonu güncellendi
+def generate_pdf(patient_name, result_class, result_prob, df_probs, doktor, explanation=None):
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", '', 14)
+    pdf.cell(200, 10, txt=sanitize_text("Perisentez Tahmin Raporu"), ln=True, align='C')
+
+    pdf.ln(10)
+    pdf.set_font("Arial", '', 12)
+    pdf.cell(200, 10, txt=sanitize_text(f"Hasta Adı: {patient_name}"), ln=True)
+    pdf.cell(200, 10, txt=sanitize_text(f"Tahmin Edilen Sendrom: {result_class} (%{result_prob:.1f})"), ln=True)
+    pdf.cell(200, 10, txt=sanitize_text(f"Doktor: {doktor}"), ln=True)
+    pdf.cell(200, 10, txt=sanitize_text(f"Tarih: {datetime.now().strftime('%Y-%m-%d %H:%M')}"), ln=True)
+
+    pdf.ln(5)
+    pdf.cell(200, 10, txt=sanitize_text("Tüm Olasılıklar:"), ln=True)
+
+    if explanation:
+        pdf.ln(5)
+        pdf.multi_cell(0, 8, sanitize_text(explanation.replace("📌 **Yorum:** ", "")))
+
+    pdf.ln(5)
+    for _, row in df_probs.iterrows():
+        pdf.cell(200, 10, txt=sanitize_text(f"{row['Sendrom']}: %{row['Olasılık (%)']}"), ln=True)
+
+    pdf.ln(10)
+    pdf.multi_cell(0, 10, sanitize_text(" Bu rapor ön tanı amaçlıdır. Kesin tanı için genetik danışmanlık önerilir."))
+
+    fname = f"rapor_{sanitize_text(patient_name).replace(' ', '_')}_{uuid.uuid4().hex[:4]}.pdf"
+    pdf.output(fname)
+    return fname
+
 def login_screen():
-    st.markdown("<h2 style='text-align: center;'>🔐 Doktor Giriş Paneli</h2>", unsafe_allow_html=True)
+    st.image("logo.jpeg", width=150)
+    st.markdown("## 🔐 Doktor Giriş Paneli")
     username = st.text_input("Kullanıcı Adı")
     password = st.text_input("Şifre", type="password")
     if st.button("Giriş Yap"):
-        users = load_users()
-        pw_hash = hash_password(password)
-        if ((users["username"] == username) & (users["password"] == pw_hash)).any():
+        if validate_login(username, hash_password(password)):
             st.session_state.authenticated = True
             st.session_state.username = username
-            st.success("Giriş başarılı.")
             st.rerun()
         else:
-            st.error("Hatalı kullanıcı adı veya şifre.")
+            st.error("Hatalı giriş!")
 
 def register_screen():
-    st.markdown("### 👤 Kayıt Ol")
+    st.markdown("## 👤 Kayıt Ol")
     username = st.text_input("Yeni Kullanıcı Adı")
     password = st.text_input("Yeni Şifre", type="password")
     confirm = st.text_input("Şifre Tekrar", type="password")
     if st.button("Kayıt Ol"):
         if password != confirm:
             st.error("Şifreler uyuşmuyor.")
-            return
-        users = load_users()
-        if username in users["username"].values:
-            st.error("Bu kullanıcı adı zaten alınmış.")
+        elif register_user(username, hash_password(password)):
+            st.success("Kayıt başarılı.")
         else:
-            save_user(username, hash_password(password))
-            st.success("Kayıt başarılı! Giriş yapabilirsiniz.")
-
-def generate_pdf(patient_name, result_class, result_prob, all_probs, doktor):
-    pdf = FPDF()
-    pdf.add_page()
-    pdf.set_font("Arial", size=14)
-    pdf.cell(200, 10, txt="Perisentez Tahmin Raporu", ln=True, align='C')
-    pdf.ln(10)
-    pdf.set_font("Arial", size=12)
-    pdf.cell(200, 10, txt=sanitize_text(f"Hasta Adı: {patient_name}"), ln=True)
-    pdf.cell(200, 10, txt=sanitize_text(f"Tahmin Edilen Sendrom: {result_class} (%{result_prob:.1f})"), ln=True)
-    pdf.cell(200, 10, txt=sanitize_text(f"Doktor: {doktor}"), ln=True)
-    pdf.cell(200, 10, txt=sanitize_text(f"Tarih: {datetime.now().strftime('%Y-%m-%d %H:%M')}"), ln=True)
-    pdf.ln(5)
-    pdf.cell(200, 10, txt=sanitize_text("Tüm Olasılıklar:"), ln=True)
-    for idx, row in all_probs.iterrows():
-        line = f"{row['Sendrom']}: %{row['Olasılık (%)']}"
-        pdf.cell(200, 10, txt=sanitize_text(line), ln=True)
-    file_name = f"rapor_{uuid.uuid4().hex[:8]}.pdf"
-    pdf.output(file_name)
-    return file_name
-
-def save_patient(username, patient_name, sendrom, prob, all_probs_file):
-    fname = f"patients_{username}.csv"
-    new_row = {
-        "Tarih": datetime.now().strftime("%Y-%m-%d %H:%M"),
-        "Hasta Adı": patient_name,
-        "Tahmin": sendrom,
-        "Olasılık": f"%{prob:.1f}",
-        "PDF": all_probs_file
-    }
-    if os.path.exists(fname):
-        df = pd.read_csv(fname)
-        df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
-    else:
-        df = pd.DataFrame([new_row])
-    df.to_csv(fname, index=False)
-
-
+            st.error("Kullanıcı mevcut.")
 
 def view_patient_history(username):
-    st.markdown("### 🗂️ Kayıtlı Hastalar")
-    fname = f"patients_{username}.csv"
-    if not os.path.exists(fname):
-        st.info("Henüz hasta kaydı yok.")
+    
+    st.markdown("## 🗂️ Kayıtlı Hastalar")
+    search = st.text_input("🔍 Hasta Ara").strip()
+    data = load_patients(username, search)
+    
+    if not data:
+        st.info("Kayıt bulunamadı.")
         return
 
-    df = pd.read_csv(fname)
-    if df.empty:
-        st.info("Kayıtlı hasta bulunamadı.")
-        return
+    for row in data:
+        pid, _, name, pred, prob, date, pdf = row
 
-    search_term = st.text_input("🔍 Hasta Arama", placeholder="Hasta adı girin...").lower().strip()
-    if search_term:
-        df = df[df["Hasta Adı"].str.lower().str.contains(search_term)]
-
-    if df.empty:
-        st.warning("Aramanıza uygun hasta bulunamadı.")
-        return
-
-    for i, row in df.iterrows():
         with st.container(border=True):
-            cols = st.columns([3, 2, 2, 1])
-            cols[0].markdown(f"**👤 {row['Hasta Adı']}**")
-            cols[1].markdown(f"🧬 Tahmin: **{row['Tahmin']}**")
-            cols[2].markdown(f"📅 {row['Tarih']}")
-            with cols[3]:
-                
-                if os.path.exists(row["PDF"]):
-                    with open(row["PDF"], "rb") as f:
-                        st.download_button("📄", f, file_name=row["PDF"], key=f"pdf_{i}", use_container_width=True)
-                else:
-                    st.warning("📄 PDF bulunamadı.")
+            st.markdown(f"### 👤 {name}")
+            st.markdown(f"🔬 **Tahmin:** `{pred}`  \n📊 **Olasılık:** `{prob}`  \n📅 **Tarih:** `{date}`")
 
-            col_det, col_del = st.columns([1, 1])
-            with col_det:
-                if st.button("🔍 Detay", key=f"detay_{i}"):
-                    st.markdown("##### 📋 Tahmin Özeti")
-                    st.write(f"- Hasta: **{row['Hasta Adı']}**")
-                    st.write(f"- Tarih: {row['Tarih']}")
-                    st.write(f"- Sendrom Tahmini: {row['Tahmin']} {row['Olasılık']}")
-            with col_del:
-                if st.button("🗑️ Sil", key=f"sil_{i}"):
-                    df.drop(index=row.name, inplace=True)
-                    df.to_csv(fname, index=False)
-                    st.success("Kayıt silindi.")
+            col1, col2, col3 = st.columns([2, 1, 1])
+            
+            with col1:
+                if os.path.exists(pdf):
+                    with open(pdf, "rb") as f:
+                        st.download_button("📎 PDF İndir", f, file_name=pdf, key=f"pdf_{pid}")
+                else:
+                    st.warning("📎 PDF bulunamadı")
+
+            with col2:
+                if st.button("🗑️ Sil", key=f"del_{pid}"):
+                    delete_patient(pid)
+                    st.success("Hasta silindi.")
                     st.rerun()
 
+            with col3:
+                if st.button("🔍 Detay", key=f"det_{pid}"):
+                    st.markdown(f"**Hasta Adı:** {name}  \n**Tahmin:** {pred} ({prob})  \n**Tarih:** {date}")
+
+
 def main_app():
-    st.markdown("<h1 style='text-align: center; color: #4A7C59;'>🧬 Perisentez</h1>", unsafe_allow_html=True)
-    st.markdown("<h4 style='text-align: center;'>Yapay Zeka Destekli Genetik Sendrom Tahmini</h4>", unsafe_allow_html=True)
-    st.markdown("---")
+    st.markdown("# 🧬 Perisentez Tahmin Aracı")
+    
+    # Model ve encoder'ları yükle
+    try:
+        model = joblib.load("model.pkl")
+        encoders = joblib.load("encoders.pkl")
+        target_encoder = joblib.load("target_encoder.pkl")
+        feature_order = joblib.load("feature_order.pkl")
+    except FileNotFoundError:
+        st.error("Model dosyaları bulunamadı. Lütfen 'model_train.py' dosyasını çalıştırarak modelleri oluşturun.")
+        return
 
-    model = joblib.load("model.pkl")
-    encoders = joblib.load("encoders.pkl")
-    target_encoder = joblib.load("target_encoder.pkl")
-    feature_order = joblib.load("feature_order.pkl")
-
-    categorical_vars = [
-        'Holoprosensefali', 'Yarık damak/dudak', 'Polidaktili', 'Polikistik böbrek',
-        'Kardiyak defekt', 'Omfalosel', 'Mikrosefali', 'Cystic hygroma',
-        'Tek umbilikal arter', 'IUGR'
-    ]
-    binary_options = ["Var", "Yok"]
-    sex_options = ["Kız", "Erkek"]
-    numerical_vars = [
-        'β-hCG', 'PAPP-A', 'NT (Ense kalınlığı)',
-        'FL (Femur uzunluğu)', 'Anne yaşı', 'CRL'
-    ]
+    cat_vars = ['Holoprosensefali', 'Yarık damak/dudak', 'Polidaktili', 'Polikistik böbrek',
+                'Kardiyak defekt', 'Omfalosel', 'Mikrosefali', 'Cystic hygroma',
+                'Tek umbilikal arter', 'IUGR']
+    bin_opts = ["Var", "Yok"]
+    sex_opts = ["Kız", "Erkek"]
+    num_vars = ['β-hCG', 'PAPP-A', 'NT (Ense kalınlığı)', 'FL (Femur uzunluğu)', 'Anne yaşı', 'CRL']
 
     input_data = {}
-    with st.form("sendrom_form"):
+    with st.form("form"):
         st.subheader("👶 Hasta Bilgileri")
-        patient_name = st.text_input("Hasta Adı Soyadı")
+        input_data["Hasta Adı"] = st.text_input("Ad Soyad")
+        input_data["Cinsiyet"] = st.selectbox("Cinsiyet", sex_opts)
 
-        st.subheader("📋 Anatomik ve Genetik Bulgular")
-        col1, col2 = st.columns(2)
-        for i, cat in enumerate(categorical_vars):
-            with col1 if i % 2 == 0 else col2:
-                input_data[cat] = st.selectbox(f"{cat}", binary_options)
+        with st.expander("Gelişimsel ve Yapısal Bulgular"):
+            # Arrange categorical variables in 3 columns
+            cols = st.columns(3)
+            for i, v in enumerate(cat_vars):
+                with cols[i % 3]:
+                    input_data[v] = st.selectbox(v, bin_opts, key=f"cat_{v}")
+        
+        with st.expander("Laboratuvar ve Antropometrik Ölçümler"):
+            # Arrange numerical variables in 2 columns
+            cols = st.columns(2)
+            for i, v in enumerate(num_vars):
+                with cols[i % 2]:
+                    # Varsayılan değer olarak 0.0 kullanıldı, veya None/belirli bir aralık kullanılabilir.
+                    # Eğer number_input'ta float/int formatı kullanılacaksa, boş bırakıldığında hata vermemesi için dikkat edilmeli
+                    input_data[v] = st.number_input(v, format="%.2f", value=0.0, key=f"num_{v}")
+        
+        submit = st.form_submit_button("🔍 Tahmin Et")
 
-        input_data["Cinsiyet"] = st.selectbox("Cinsiyet", sex_options)
+    if submit:
+        # Girdi verilerinin hepsinin dolu olduğundan emin ol
+        # 0.0 varsayılan değer olduğu için, sadece boş string veya None kontrolü yapılabilir.
+        # Sayısal input'ların 0.0 olması geçerli bir değer olabilir.
+        if not input_data["Hasta Adı"].strip():
+            st.warning("Lütfen hasta adını girin.")
+            return
 
-        st.subheader("📈 Sayısal Parametreler")
-        col3, col4 = st.columns(2)
-        for i, num in enumerate(numerical_vars):
-            with col3 if i % 2 == 0 else col4:
-                input_data[num] = st.number_input(num, format="%.2f")
+        with st.spinner("Tahminler hesaplanıyor..."):
+            df = pd.DataFrame([input_data])
+            patient_name = df.pop("Hasta Adı").values[0]
+            
+            # Label Encoding for categorical features
+            for col in df.columns:
+                if df[col].dtype == object and col in encoders:
+                    df[col] = encoders[col].transform(df[col])
+            
+            # Ensure all feature_order columns are present, fill missing with 0 or a suitable default
+            for feature in feature_order:
+                if feature not in df.columns:
+                    df[feature] = 0 # Modelinizin beklediği varsayılan değeri ayarlayın.
+            df = df[feature_order] # Ensure feature order is correct for the model
 
-        submitted = st.form_submit_button("🔍 Tahmin Et")
+            probs = model.predict_proba(df)[0]
+            classes = target_encoder.inverse_transform(model.classes_)
+            df_probs = pd.DataFrame({"Sendrom": classes, "Olasılık (%)": (probs * 100).round(2)})
+            top_idx = probs.argmax()
+            top_class = classes[top_idx]
+            top_prob = probs[top_idx] * 100
 
-    if submitted:
-        df_input = pd.DataFrame([input_data])
-        for col in df_input.columns:
-            if col in encoders:
-                df_input[col] = encoders[col].transform(df_input[col])
-        df_input = df_input[feature_order]
+        st.success(f"Tahmin: **{top_class}** (%{top_prob:.1f})")
+        
+        # === AI Açıklama Gösterimi ===
+        # Pass the predicted syndrome and the raw input values to the explanation function
+        explanation = generate_explanation(input_data, top_class)
+        st.markdown("### 💡 Yapay Zeka Yorumu")
+        st.info(explanation)
 
-        probs = model.predict_proba(df_input)[0]
-        classes = target_encoder.inverse_transform(model.classes_)
-        top_idx = probs.argmax()
-        top_class = classes[top_idx]
-        top_prob = probs[top_idx] * 100
+        st.markdown("### 📊 Tüm Olasılıklar")
+        # Display probabilities in a more compact way
+        # Sort by probability descending for better readability
+        df_probs_sorted = df_probs.sort_values(by="Olasılık (%)", ascending=False)
+        for _, row in df_probs_sorted.iterrows():
+            st.markdown(f"- **{row['Sendrom']}**: %{row['Olasılık (%)']:.2f}")
 
-        st.markdown("### 🎯 Tahmin Sonucu")
-        st.success(f"**{top_class}** (%{top_prob:.1f} olasılıkla)")
-
-    st.markdown("#### 🔎 Diğer Olasılıklar:")
-    other_probs = df_probs[df_probs["Sendrom"] != top_class]
-    for _, row in other_probs.iterrows():
-        st.markdown(f"- {row['Sendrom']}: **%{row['Olasılık (%)']}**")
-    st.markdown("#### 🔎 Diğer Olasılıklar:")
-    for _, row in df_probs.iterrows():
-        st.markdown(f"- {row['Sendrom']}: **%{row['Olasılık (%)']}**")
-
-        df_probs = pd.DataFrame({
-            "Sendrom": classes,
-            "Olasılık (%)": (probs * 100).round(2)
-        }).sort_values("Olasılık (%)", ascending=False)
-
-        st.markdown("### 📊 Olasılık Dağılımı")
-        fig, ax = plt.subplots()
-        ax.barh(df_probs["Sendrom"], df_probs["Olasılık (%)"], color="#4A7C59")
+        fig, ax = plt.subplots(figsize=(8, 5))
+        ax.barh(df_probs_sorted["Sendrom"], df_probs_sorted["Olasılık (%)"], color="#4A7C59")
         ax.invert_yaxis()
         ax.set_xlabel("Olasılık (%)")
-        ax.set_xlim(0, 100)
+        ax.set_title("Sendrom Olasılıkları")
         st.pyplot(fig)
 
-        pdf_file = generate_pdf(patient_name, top_class, top_prob, df_probs, st.session_state.username)
+        # PDF generation and saving
+        pdf_file = generate_pdf(patient_name, top_class, top_prob, df_probs, st.session_state.username, explanation)
         save_patient(st.session_state.username, patient_name, top_class, top_prob, pdf_file)
+        
         with open(pdf_file, "rb") as f:
-            st.download_button("⬇️ PDF Raporu İndir", f, file_name=pdf_file, mime="application/pdf")
-        # os.remove(pdf_file)  # Artık silinmiyor
+            st.download_button("⬇️ PDF Raporunu İndir", f, file_name=os.path.basename(pdf_file), mime="application/pdf")
+        
+        # Optionally remove the temporary PDF after download for cleanup if desired
+        # os.remove(pdf_file)
 
-    st.markdown("---")
     view_patient_history(st.session_state.username)
 
+# Ana menü ve oturum yönetimi
 menu = st.sidebar.selectbox("Menü", ["Giriş Yap", "Kayıt Ol"] if not st.session_state.authenticated else ["Tahmin Aracı", "Çıkış"])
-
 if not st.session_state.authenticated:
-    if menu == "Giriş Yap":
-        login_screen()
-    elif menu == "Kayıt Ol":
-        register_screen()
+    if menu == "Giriş Yap": login_screen()
+    elif menu == "Kayıt Ol": register_screen()
 else:
-    if menu == "Tahmin Aracı":
-        main_app()
+    if menu == "Tahmin Aracı": main_app()
     elif menu == "Çıkış":
         st.session_state.authenticated = False
         st.session_state.username = None
