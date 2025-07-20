@@ -74,9 +74,11 @@ Hekim bu bilgilerle daha bilinçli yönlendirmeler yapabilir (ör. NIPT, amniyos
 
 Bu linkten ürünümüzü kullanabilirsiniz : https://perisentez.streamlit.app/
 
-Kullanıcı adı: admin
+Kullanıcı adı: ege
 
 şifre: 1234
+
+veya kayıt olabilirsiniz
 
 
 # Sprint 1
