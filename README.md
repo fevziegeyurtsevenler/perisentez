@@ -206,6 +206,14 @@ Sprint 2’nin amacı, MVP olarak çalışan kural tabanlı sistemin üzerine **
 
 ---
 
+### Ekran Görüntüleri 
+
+Daily scrumlar ile ilgili ekran görüntüleri:
+
+[Ekran Görüntüleri Albümü](https://imgur.com/a/wUub993)
+
+---
+
 ### 🔁 Sprint Retrospektifi
 
 - **İyileşen Noktalar:**
