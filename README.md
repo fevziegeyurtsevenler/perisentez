@@ -1,6 +1,7 @@
 <p align="center">
-  <img src="https://imgur.com/a/d9xHOjk" alt="Perisentez Logo" width="250"/>
+  <img src="https://raw.githubusercontent.com/fevziegeyurtsevenler/perisentez/main/logo.jpeg" width="250" alt="Perisentez Logo"/>
 </p>
+
 
 
 ## Takım İsmi
