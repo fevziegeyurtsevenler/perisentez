@@ -6,11 +6,11 @@ import os
 import hashlib
 import sqlite3
 import matplotlib.pyplot as plt
-from fpdf import FPDF # fpdf2 kütüphanesini kullanıyoruz
+from fpdf import FPDF 
 from datetime import datetime
 
 
-# Türkçe karakterleri PDF'e uyumlu hale getirir
+
 def sanitize_text(text):
     return (text
         .replace("ı", "i").replace("İ", "I")
@@ -21,23 +21,22 @@ def sanitize_text(text):
         .replace("ö", "o").replace("Ö", "O")
     )
 
-# --- FPDF için Türkçe karakter desteği ---
-# Font dosyasının tam yolunu buraya yazın
-FONT_PATH = "DejaVuSansCondensed.ttf" #
-FONT_NAME = "DejaVuSansCondensed"     # Fontun FPDF içindeki adı
+
+FONT_PATH = "DejaVuSansCondensed.ttf" 
+FONT_NAME = "DejaVuSansCondensed"     
 
 class PDF(FPDF):
     def __init__(self):
         super().__init__()
-        # uni=True Türkçe (UTF-8) karakter desteği için kritik
+        
         try:
             self.add_font(FONT_NAME, '', FONT_PATH, uni=True)
             self.set_font(FONT_NAME, '', 12)
         except Exception as e:
             st.error(f"Font yüklenirken bir hata oluştu. Lütfen '{FONT_PATH}' dosyasının doğru yolda olduğundan emin olun ve erişilebilirliğini kontrol edin. Hata: {e}")
-            # Hata durumunda varsayılan bir fona geri dönebilir veya uygulamayı durdurabiliriz.
-            self.set_font("Arial", '', 12) # Yedek font
-            st.stop() # Font hatası kritik olduğu için uygulamayı durdurabiliriz.
+            
+            self.set_font("Arial", '', 12) 
+            st.stop() 
 
     def chapter_title(self, title):
         self.set_font(FONT_NAME, '', 14)
@@ -49,11 +48,11 @@ class PDF(FPDF):
         self.multi_cell(0, 8, txt=body)
         self.ln()
 
-# === Yorumlayıcı AI Açıklaması ===
+
 def generate_explanation(values, predicted_syndrome):
     comments = []
 
-    # Genel risk faktörleri
+    
     if values["NT (Ense kalınlığı)"] > 3.5:
         comments.append(f"Ense kalınlığı {values['NT (Ense kalınlığı)']} mm olarak ölçülmüş, bu değer 3.5 mm üzeri olup nöral tüp defekti veya trizomilerle ilişkili olabilir.")
 
@@ -66,7 +65,7 @@ def generate_explanation(values, predicted_syndrome):
     if values["FL (Femur uzunluğu)"] < 15:
         comments.append(f"Femur uzunluğu {values['FL (Femur uzunluğu)']} mm olarak ölçülmüş ve kısa olması kemik gelişim bozukluklarına işaret edebilir.")
 
-    # Modele göre spesifik yorumlar
+    
     if predicted_syndrome == "Patau":
         patau_specific_findings = []
         if values.get("Holoprosensefali") == "Var":
@@ -103,8 +102,7 @@ def generate_explanation(values, predicted_syndrome):
         else:
             comments.append("Tahmin edilen Down sendromu için spesifik bir bulguya rastlanmamıştır. Ancak klinik bulgular ve diğer testler daha kapsamlı bir değerlendirme gerektirebilir.")
     
-    # Diğer sendromlar için de benzer if/elif blokları eklenebilir
-    # Örneğin: Edward sendromu için yorumlar
+    
     elif predicted_syndrome == "Edward":
         edward_specific_findings = []
         if values.get("IUGR") == "Var":
@@ -121,7 +119,7 @@ def generate_explanation(values, predicted_syndrome):
         else:
             comments.append("Tahmin edilen Edward sendromu için spesifik bir bulguya rastlanmamıştır. Ancak klinik bulgular ve diğer testler daha kapsamlı bir değerlendirme gerektirebilir.")
     
-    # DiGeorge sendromu için yorumlar
+    
     elif predicted_syndrome == "DiGeorge":
         digeorge_specific_findings = []
         if values.get("Kardiyak defekt") == "Var":
@@ -143,15 +141,7 @@ def generate_explanation(values, predicted_syndrome):
     return explanation
 
 
-# 📁 Perisentez - Tam Sürüm (Konuşmalara Göre Optimize Edilmiş)
-# Özellikler:
-# - Giriş / Kayıt
-# - SQLite veri saklama
-# - Yapay zeka destekli tahmin (joblib modeli)
-# - Hasta geçmişi yönetimi
-# - PDF raporlama
-# - Olasılık grafiği + metin çıktısı
-# - Arama, silme, detay gösterimi
+
 
 st.set_page_config(page_title="Perisentez", page_icon="🧬", layout="centered")
 
@@ -175,7 +165,7 @@ def init_db():
 
 init_db()
 
-# === Kullanıcı Oturumu ===
+
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 if "username" not in st.session_state:
@@ -230,7 +220,7 @@ def delete_patient(pid):
     conn.commit()
     conn.close()
 
-# PDF oluşturma fonksiyonu güncellendi
+
 def generate_pdf(patient_name, result_class, result_prob, df_probs, doktor, explanation=None):
     pdf = FPDF()
     pdf.add_page()
@@ -328,7 +318,7 @@ def view_patient_history(username):
 def main_app():
     st.markdown("# 🧬 Perisentez Tahmin Aracı")
     
-    # Model ve encoder'ları yükle
+    
     try:
         model = joblib.load("model.pkl")
         encoders = joblib.load("encoders.pkl")
@@ -352,27 +342,24 @@ def main_app():
         input_data["Cinsiyet"] = st.selectbox("Cinsiyet", sex_opts)
 
         with st.expander("Gelişimsel ve Yapısal Bulgular"):
-            # Arrange categorical variables in 3 columns
+            
             cols = st.columns(3)
             for i, v in enumerate(cat_vars):
                 with cols[i % 3]:
                     input_data[v] = st.selectbox(v, bin_opts, key=f"cat_{v}")
         
         with st.expander("Laboratuvar ve Antropometrik Ölçümler"):
-            # Arrange numerical variables in 2 columns
+            
             cols = st.columns(2)
             for i, v in enumerate(num_vars):
                 with cols[i % 2]:
-                    # Varsayılan değer olarak 0.0 kullanıldı, veya None/belirli bir aralık kullanılabilir.
-                    # Eğer number_input'ta float/int formatı kullanılacaksa, boş bırakıldığında hata vermemesi için dikkat edilmeli
+                    
                     input_data[v] = st.number_input(v, format="%.2f", value=0.0, key=f"num_{v}")
         
         submit = st.form_submit_button("🔍 Tahmin Et")
 
     if submit:
-        # Girdi verilerinin hepsinin dolu olduğundan emin ol
-        # 0.0 varsayılan değer olduğu için, sadece boş string veya None kontrolü yapılabilir.
-        # Sayısal input'ların 0.0 olması geçerli bir değer olabilir.
+        
         if not input_data["Hasta Adı"].strip():
             st.warning("Lütfen hasta adını girin.")
             return
@@ -381,16 +368,16 @@ def main_app():
             df = pd.DataFrame([input_data])
             patient_name = df.pop("Hasta Adı").values[0]
             
-            # Label Encoding for categorical features
+            
             for col in df.columns:
                 if df[col].dtype == object and col in encoders:
                     df[col] = encoders[col].transform(df[col])
             
-            # Ensure all feature_order columns are present, fill missing with 0 or a suitable default
+            
             for feature in feature_order:
                 if feature not in df.columns:
-                    df[feature] = 0 # Modelinizin beklediği varsayılan değeri ayarlayın.
-            df = df[feature_order] # Ensure feature order is correct for the model
+                    df[feature] = 0 
+            df = df[feature_order] 
 
             probs = model.predict_proba(df)[0]
             classes = target_encoder.inverse_transform(model.classes_)
@@ -401,15 +388,13 @@ def main_app():
 
         st.success(f"Tahmin: **{top_class}** (%{top_prob:.1f})")
         
-        # === AI Açıklama Gösterimi ===
-        # Pass the predicted syndrome and the raw input values to the explanation function
+        
         explanation = generate_explanation(input_data, top_class)
         st.markdown("### 💡 Yapay Zeka Yorumu")
         st.info(explanation)
 
         st.markdown("### 📊 Tüm Olasılıklar")
-        # Display probabilities in a more compact way
-        # Sort by probability descending for better readability
+        
         df_probs_sorted = df_probs.sort_values(by="Olasılık (%)", ascending=False)
         for _, row in df_probs_sorted.iterrows():
             st.markdown(f"- **{row['Sendrom']}**: %{row['Olasılık (%)']:.2f}")
@@ -421,19 +406,18 @@ def main_app():
         ax.set_title("Sendrom Olasılıkları")
         st.pyplot(fig)
 
-        # PDF generation and saving
+        
         pdf_file = generate_pdf(patient_name, top_class, top_prob, df_probs, st.session_state.username, explanation)
         save_patient(st.session_state.username, patient_name, top_class, top_prob, pdf_file)
         
         with open(pdf_file, "rb") as f:
             st.download_button("⬇️ PDF Raporunu İndir", f, file_name=os.path.basename(pdf_file), mime="application/pdf")
         
-        # Optionally remove the temporary PDF after download for cleanup if desired
-        # os.remove(pdf_file)
+        
 
     view_patient_history(st.session_state.username)
 
-# Ana menü ve oturum yönetimi
+
 menu = st.sidebar.selectbox("Menü", ["Giriş Yap", "Kayıt Ol"] if not st.session_state.authenticated else ["Tahmin Aracı", "Çıkış"])
 if not st.session_state.authenticated:
     if menu == "Giriş Yap": login_screen()
