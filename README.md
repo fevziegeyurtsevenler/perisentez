@@ -81,7 +81,7 @@ Kullanıcı adı: admin
 
 # Sprint 1
 
-### Genel Kararlar ve Kullanılan Araçlar
+### Sprint Notları
 
 * **UI Tasarımları:** Sprint 1'de ayrı bir UI tasarım aracı kullanılmamıştır. Kullanıcı arayüzü, doğrudan Streamlit kütüphanesi kullanılarak (`perisentez.py` dosyası içerisinde) kodlanmıştır.
 * **Proje Yönetimi:** Proje yönetimi ve görev takibi için **Trello** platformu aktif olarak kullanılmıştır.
