@@ -75,6 +75,7 @@ Hekim bu bilgilerle daha bilinçli yönlendirmeler yapabilir (ör. NIPT, amniyos
 Bu linkten ürünümüzü kullanabilirsiniz : https://perisentez.streamlit.app/
 
 Kullanıcı adı: admin
+
 şifre: 1234
 
 
