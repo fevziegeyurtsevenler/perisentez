@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://i.imgur.com/9CRJGdA.png" alt="Perisentez Logo" width="250"/>
+  <img src="https://imgur.com/a/d9xHOjk" alt="Perisentez Logo" width="250"/>
 </p>
 
 
