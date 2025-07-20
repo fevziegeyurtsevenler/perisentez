@@ -1,3 +1,8 @@
+<p align="center">
+  <img src="https://i.imgur.com/9CRJGdA.png" alt="Perisentez Logo" width="250"/>
+</p>
+
+
 ## Takım İsmi
 **Timpossible**
 
