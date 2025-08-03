@@ -90,6 +90,8 @@ Uygulama, artık sadece prototip değil; klinik kullanıma hazır bir **karar de
 ## 🚀 Kullanım
 🔗 [Perisentez Uygulamasını Deneyin](https://perisentez.streamlit.app/)  
 
+📘 [Perisentez Kullanım Kılavuzu (PDF)](https://github.com/fevziegeyurtsevenler/perisentez/raw/main/Kullanım%20Kılavuzu.pdf)
+
 
 ---
 
