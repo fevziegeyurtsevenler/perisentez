@@ -90,9 +90,6 @@ Uygulama, artık sadece prototip değil; klinik kullanıma hazır bir **karar de
 ## 🚀 Kullanım
 🔗 [Perisentez Uygulamasını Deneyin](https://perisentez.streamlit.app/)  
 
-- **Kullanıcı adı:** `ege`  
-- **Şifre:** `1234`  
-- veya kayıt olarak giriş yapabilirsiniz.
 
 ---
 
