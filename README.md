@@ -205,6 +205,9 @@ AI entegrasyonu, HTML raporlama ve kullanıcı deneyimi iyileştirmeleriyle ür�
 - WhatsApp + Google Meet  
 - Chatbot ve HTML raporlama modülü canlı test edildi  
 
+## Ekran Görüntüleri
+[Ekran Görüntüleri Albümü](https://imgur.com/a/w0faUG7)
+
 ## Sprint Retrospektifi
 - HTML raporlama güvenilir çıktı sağladı  
 - Yapay zekâ entegrasyonu sistemi benzersiz kıldı  
