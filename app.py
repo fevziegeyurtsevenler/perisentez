@@ -551,9 +551,9 @@ def main_app():
 
     try:
         model = joblib.load("model.pkl")
-        encoders = joblib.load(feature_encoders.pkl")
-        target_encoder = joblib.load(target_encoder.pkl")
-        feature_order = joblib.load(features.pkl")
+        encoders = joblib.load("feature_encoders.pkl")
+        target_encoder = joblib.load("target_encoder.pkl")
+        feature_order = joblib.load("features.pkl")
     except FileNotFoundError as e:
         st.error(f"❌ Model dosyaları bulunamadı: {e}")
         st.info("📝 Lütfen 'model_train.py' dosyasını çalıştırarak modelleri oluşturun.")
@@ -828,4 +828,5 @@ else:
         main_app()
     elif st.session_state.current_page == "chatbot":
         chatbot_interface()
+
 
