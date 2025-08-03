@@ -238,5 +238,72 @@ Daily scrumlar ile ilgili ekran görüntüleri:
 
 Sprint 2, Perisentez projesini MVP seviyesinden çıkarıp klinik kullanıma daha uygun bir hale getirmiştir. Özellikle PDF çıktısı, yapay zekâ açıklamaları ve hasta geçmişinin kalıcı tutulması sayesinde sistem artık sadece bir tahmin aracı değil, profesyonel bir klinik yardımcı sistemdir.
 
+---
 
+# 📌 Sprint 3
 
+## Sprint Amacı
+Sprint 3’ün amacı, Perisentez sistemini klinik kullanım için daha güvenilir, açıklayıcı ve kullanıcı dostu hale getirmekti.  
+Bu sprintte yapay zekâ tabanlı yorumlayıcıların entegrasyonu, raporlama sisteminin modernleştirilmesi ve kullanıcı deneyimi odaklı iyileştirmeler yapıldı.  
+
+---
+
+## ✅ Tamamlanan İşler
+
+### 📄 HTML Raporlama Sistemi
+- PDF yerine daha uyumlu ve güvenilir **HTML raporları** üretildi.  
+- Raporlar modern CSS ile tasarlandı, risk seviyeleri görsel olarak vurgulandı.  
+- İndirilebilir ve paylaşılabilir rapor çıktıları oluşturuldu.  
+
+### 🤖 Yapay Zekâ Destekli Chatbot
+- Google **Gemini Pro** ve OpenAI **GPT-3.5 Turbo** entegrasyonu yapıldı.  
+- Hekimler, doğrudan uygulama içinden medikal danışmanlık alabilir hale geldi.  
+- Chatbot, prenatal genetik sendromlarla ilgili sorulara tıbbi bilgilendirme yapıyor.  
+
+### 🧠 Geliştirilmiş AI Açıklama Modülü
+- Analiz edilen bulgular için neden-sonuç ilişkisi detaylı açıklamalar halinde sunuldu.  
+- Kullanıcıya özel, risk faktörlerini belirten yorumlar rapora eklendi.  
+
+### 🎨 Kullanıcı Deneyimi İyileştirmeleri
+- Risk seviyeleri için renk kodlu etiketler eklendi (⚠️ yüksek risk, ⚡ orta risk, ✅ düşük risk).  
+- Raporlarda hasta bilgileri, sonuçlar ve yorumlar bölümlere ayrıldı.  
+- Arayüzde modern tasarım prensipleri uygulandı.  
+
+### 💾 Veri Güvenliği ve Yönetimi
+- SQLite tabanlı hasta kayıt sistemi güvenli hale getirildi.  
+- Kullanıcı bazlı hasta geçmişi yönetimi sürdürüldü.  
+
+---
+
+## 🧪 Günlük Scrumlar
+- Günlük scrum toplantıları yine WhatsApp grubu ve Google Meet üzerinden gerçekleştirildi.  
+- Özellikle chatbot ve raporlama modülü, takım üyelerinin canlı demo ve kod paylaşımıyla entegre edildi.  
+- Kullanıcı deneyimi testleri yapılarak hata ayıklamalar gerçekleştirildi.  
+
+---
+
+## 📈 Puanlandırma
+- **Sprint 3 Hedefi:** 450 Puan  
+- **Tamamlanan Tahmini Puan:** 480 Puan  
+
+**Dağılım:**  
+- HTML raporlama ve modern UI geliştirmeleri: 150 puan  
+- Gemini & GPT entegrasyonu: 150 puan  
+- Yapay zekâ açıklama modülü: 100 puan  
+- Güvenlik ve hasta geçmişi yönetimi: 80 puan  
+
+---
+## 🔁 Sprint Retrospektifi
+
+### İyileşen Noktalar
+- HTML raporlama sayesinde rapor çıktıları daha güvenilir ve paylaşılabilir hale geldi.  
+- Yapay zekâ entegrasyonu, kullanıcıya bilgi desteği sunarak sistemi benzersiz kıldı.  
+- Risk analizleri artık görsel olarak daha anlaşılır.  
+
+---
+
+## 📌 Genel Değerlendirme
+Sprint 3 ile birlikte Perisentez, yalnızca kural tabanlı bir prototip olmaktan çıkıp,  
+**AI destekli açıklamalar, modern raporlama ve güvenli veri yönetimi** ile klinik pratikte kullanılabilecek düzeye gelmiştir.  
+
+Bu sprintin sonunda sistem, uzman hekimlere karar desteği sunan, kullanıcı dostu ve yapay zekâ ile zenginleştirilmiş bir klinik yardımcı platform haline gelmiştir. 🚀
