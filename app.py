@@ -12,8 +12,6 @@ import requests
 import json
 
 def sanitize_text(text):
-    if not isinstance(text, str):
-        return str(text)
     return (text
         .replace("ı", "i").replace("İ", "I")
         .replace("ş", "s").replace("Ş", "S")
@@ -23,9 +21,151 @@ def sanitize_text(text):
         .replace("ö", "o").replace("Ö", "O")
     )
 
+FONT_PATH = "DejaVuSansCondensed.ttf" 
+FONT_NAME = "DejaVuSansCondensed"     
+
+class PDF(FPDF):
+    def __init__(self):
+        super().__init__()
+        try:
+            self.add_font(FONT_NAME, '', FONT_PATH, uni=True)
+            self.set_font(FONT_NAME, '', 12)
+        except Exception as e:
+            st.warning(f"Font yüklenirken hata: {e}. Varsayılan font kullanılacak.")
+            self.set_font("Arial", '', 12) 
+
+    def chapter_title(self, title):
+        self.set_font("Arial", '', 14)
+        self.multi_cell(0, 10, txt=title, align='C')
+        self.ln(5)
+
+    def chapter_body(self, body):
+        self.set_font("Arial", '', 12)
+        self.multi_cell(0, 8, txt=body)
+        self.ln()
+
+def generate_explanation(values, predicted_syndrome):
+    comments = []
+
+    if values.get("NT (Ense kalınlığı)", 0) > 3.5:
+        comments.append(f"Ense kalınlığı {values['NT (Ense kalınlığı)']} mm olarak ölçülmüş, bu değer 3.5 mm üzeri olup nöral tüp defekti veya trizomilerle ilişkili olabilir.")
+    if values.get("PAPP-A", 1) < 0.5:
+        comments.append(f"PAPP-A seviyesi {values['PAPP-A']} MoM ile düşüktür; bu durum Down sendromu riskini artırabilir.")
+    if values.get("β-hCG", 0) > 2.0:
+        comments.append(f"β-hCG değeri {values['β-hCG']} MoM ile normalin üzerindedir, bu da trizomi 21 (Down) ile uyumlu olabilir.")
+    if values.get("FL (Femur uzunluğu)", 1000) < 15:
+        comments.append(f"Femur uzunluğu {values['FL (Femur uzunluğu)']} mm olarak ölçülmüş ve kısa olması kemik gelişim bozukluklarına işaret edebilir.")
+
+    if comments:
+        explanation = "📌 **Yorum:** " + " ".join(comments)
+    else:
+        explanation = "ℹ️ Belirgin bir risk faktörü tespit edilmedi veya girilen verilerle doğrudan spesifik bir sendromla ilişkilendirilebilecek yeterli bulguya ulaşılamadı. Yapay zeka genel verilerle değerlendirme yapmıştır."
+    return explanation
+
+# Chatbot fonksiyonları
+def call_gemini_api(prompt, api_key):
+    """Google Gemini API çağrısı"""
+    try:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key={api_key}"
+        headers = {"Content-Type": "application/json"}
+        data = {
+            "contents": [{
+                "parts": [{"text": prompt}]
+            }]
+        }
+        response = requests.post(url, headers=headers, json=data, timeout=30)
+        if response.status_code == 200:
+            result = response.json()
+            return result["candidates"][0]["content"]["parts"][0]["text"]
+        else:
+            return f"API Hatası: {response.status_code}"
+    except Exception as e:
+        return f"Hata: {str(e)}"
+
+def call_openai_api(prompt, api_key):
+    """OpenAI GPT API çağrısı"""
+    try:
+        url = "https://api.openai.com/v1/chat/completions"
+        headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json"
+        }
+        data = {
+            "model": "gpt-3.5-turbo",
+            "messages": [{"role": "user", "content": prompt}],
+            "max_tokens": 500,
+            "temperature": 0.7
+        }
+        response = requests.post(url, headers=headers, json=data, timeout=30)
+        if response.status_code == 200:
+            result = response.json()
+            return result["choices"][0]["message"]["content"]
+        else:
+            return f"API Hatası: {response.status_code}"
+    except Exception as e:
+        return f"Hata: {str(e)}"
+
+def chatbot_interface():
+    """Chatbot arayüzü"""
+    st.markdown("## 🤖 AI Danışman Chatbot")
+    
+    # API ayarları
+    api_provider = st.selectbox("AI Sağlayıcısı Seçin:", ["Google Gemini", "OpenAI GPT"])
+    api_key = st.text_input("API Anahtarı:", type="password", help="API anahtarınızı girin")
+    
+    if not api_key:
+        st.warning("Lütfen API anahtarınızı girin.")
+        st.info("📝 **API Anahtarı Nasıl Alınır:**\n\n"
+                "**Google Gemini:** https://makersuite.google.com/app/apikey\n\n"
+                "**OpenAI:** https://platform.openai.com/api-keys")
+        return
+    
+    # Chat geçmişi
+    if "chat_history" not in st.session_state:
+        st.session_state.chat_history = []
+    
+    # Soru giriş alanı
+    user_question = st.text_area("Sorunuzu yazın:", height=100, 
+                                placeholder="Örn: Down sendromu hakkında bilgi verir misiniz?")
+    
+    col1, col2 = st.columns([1, 4])
+    with col1:
+        if st.button("📨 Gönder", use_container_width=True):
+            if user_question.strip():
+                # Medikal kontekst ekleme
+                context = """Sen bir tıbbi danışman asistanısın. Perinatology, genetik sendromlar, 
+                prenatal tanı ve perisentez konularında uzmanlaşmış durumdasın. 
+                Verdiğin bilgiler sadece eğitim amaçlıdır ve kesin tanı için doktora başvurulması gerektiğini belirt."""
+                
+                full_prompt = f"{context}\n\nSoru: {user_question}"
+                
+                with st.spinner("AI yanıt oluşturuyor..."):
+                    if api_provider == "Google Gemini":
+                        response = call_gemini_api(full_prompt, api_key)
+                    else:
+                        response = call_openai_api(full_prompt, api_key)
+                
+                # Chat geçmişine ekleme
+                st.session_state.chat_history.append({"user": user_question, "ai": response})
+                st.rerun()
+    
+    with col2:
+        if st.button("🗑️ Geçmişi Temizle", use_container_width=True):
+            st.session_state.chat_history = []
+            st.rerun()
+    
+    # Chat geçmişini gösterme
+    if st.session_state.chat_history:
+        st.markdown("### 💬 Sohbet Geçmişi")
+        for i, chat in enumerate(reversed(st.session_state.chat_history[-5:])):  # Son 5 mesaj
+            with st.expander(f"Soru {len(st.session_state.chat_history)-i}: {chat['user'][:50]}..."):
+                st.markdown(f"**👤 Siz:** {chat['user']}")
+                st.markdown(f"**🤖 AI:** {chat['ai']}")
+
+st.set_page_config(page_title="Perisentez", page_icon="🧬", layout="wide")
+
 DB_PATH = "perisentez.db"
 
-# Database init
 def init_db():
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
@@ -44,7 +184,11 @@ def init_db():
 
 init_db()
 
-# Password hashing
+if "authenticated" not in st.session_state:
+    st.session_state.authenticated = False
+if "username" not in st.session_state:
+    st.session_state.username = None
+
 def hash_password(pw):
     return hashlib.sha256(pw.encode()).hexdigest()
 
@@ -69,16 +213,12 @@ def validate_login(username, pw_hash):
     return result
 
 def save_patient(username, name, pred, prob, pdf_file):
-    try:
-        conn = sqlite3.connect(DB_PATH)
-        c = conn.cursor()
-        c.execute("INSERT INTO patients (username, patient_name, prediction, probability, date, pdf_file) VALUES (?, ?, ?, ?, ?, ?)",
-                  (username, sanitize_text(name), sanitize_text(pred), f"%{prob:.1f}", datetime.now().strftime("%Y-%m-%d %H:%M"), pdf_file))
-        conn.commit()
-    except Exception as e:
-        st.error(f"Hasta kaydedilirken hata oluştu: {e}")
-    finally:
-        conn.close()
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("INSERT INTO patients (username, patient_name, prediction, probability, date, pdf_file) VALUES (?, ?, ?, ?, ?, ?)",
+              (username, name, pred, f"%{prob:.1f}", datetime.now().strftime("%Y-%m-%d %H:%M"), pdf_file))
+    conn.commit()
+    conn.close()
 
 def load_patients(username, search=None):
     conn = sqlite3.connect(DB_PATH)
@@ -111,6 +251,9 @@ def generate_pdf(patient_name, result_class, result_prob, df_probs, doktor, expl
     pdf.cell(200, 10, txt=sanitize_text(f"Doktor: {doktor}"), ln=True)
     pdf.cell(200, 10, txt=sanitize_text(f"Tarih: {datetime.now().strftime('%Y-%m-%d %H:%M')}"), ln=True)
 
+    pdf.ln(5)
+    pdf.cell(200, 10, txt=sanitize_text("Tüm Olasılıklar:"), ln=True)
+
     if explanation:
         pdf.ln(5)
         pdf.multi_cell(0, 8, sanitize_text(explanation.replace("📌 **Yorum:** ", "")))
@@ -120,7 +263,7 @@ def generate_pdf(patient_name, result_class, result_prob, df_probs, doktor, expl
         pdf.cell(200, 10, txt=sanitize_text(f"{row['Sendrom']}: %{row['Olasılık (%)']}"), ln=True)
 
     pdf.ln(10)
-    pdf.multi_cell(0, 10, sanitize_text("Bu rapor ön tanı amaçlıdır. Kesin tanı için genetik danışmanlık önerilir."))
+    pdf.multi_cell(0, 10, sanitize_text(" Bu rapor ön tanı amaçlıdır. Kesin tanı için genetik danışmanlık önerilir."))
 
     fname = f"rapor_{sanitize_text(patient_name).replace(' ', '_')}_{uuid.uuid4().hex[:4]}.pdf"
     pdf.output(fname)
@@ -133,9 +276,12 @@ def login_screen():
             <p style="font-size: 1.2rem; color: #666;">Prenatal Genetik Analiz Platformu</p>
         </div>
     """, unsafe_allow_html=True)
-
-    # LOGO KALDIRILDI
-
+    
+    if os.path.exists("logo.jpeg"):
+        col1, col2, col3 = st.columns([1, 1, 1])
+        with col2:
+            st.image("logo.jpeg", width=200)
+    
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
         st.markdown("### 🔐 Doktor Giriş Paneli")
@@ -152,9 +298,6 @@ def login_screen():
                     st.rerun()
                 else:
                     st.error("❌ Hatalı kullanıcı adı veya şifre!")
-
-
-
 
 def register_screen():
     st.markdown("### 👤 Yeni Hesap Oluştur")
