@@ -12,19 +12,31 @@ import requests
 import json
 
 def sanitize_text(text):
-    """Türkçe karakterleri ASCII karakterlere dönüştürür"""
+    """Türkçe karakterleri ve tüm non-ASCII karakterleri ASCII karakterlere dönüştürür"""
     if text is None:
         return ""
     
+    result = str(text)
+    
+    # Türkçe karakterleri değiştir
     replacements = {
         'ı': 'i', 'İ': 'I', 'ş': 's', 'Ş': 'S',
         'ç': 'c', 'Ç': 'C', 'ğ': 'g', 'Ğ': 'G',
-        'ü': 'u', 'Ü': 'U', 'ö': 'o', 'Ö': 'O'
+        'ü': 'u', 'Ü': 'U', 'ö': 'o', 'Ö': 'O',
+        'â': 'a', 'Â': 'A', 'î': 'i', 'Î': 'I',
+        'û': 'u', 'Û': 'U', 'ô': 'o', 'Ô': 'O'
     }
     
-    result = str(text)
     for turkish, english in replacements.items():
         result = result.replace(turkish, english)
+    
+    # Tüm non-ASCII karakterleri kaldır veya değiştir
+    try:
+        # ASCII olmayan karakterleri kaldır
+        result = result.encode('ascii', 'ignore').decode('ascii')
+    except:
+        # Son çare: sadece ASCII karakterleri tut
+        result = ''.join(char for char in result if ord(char) < 128)
     
     return result
 
@@ -220,12 +232,19 @@ def save_patient(username, name, pred, prob, pdf_file):
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     try:
+        # Verileri temizle ve güvenli hale getir
+        clean_name = sanitize_text(str(name))
+        clean_pred = sanitize_text(str(pred))
+        clean_prob = f"{float(prob):.1f}"
+        current_date = datetime.now().strftime("%Y-%m-%d %H:%M")
+        
         c.execute("INSERT INTO patients (username, patient_name, prediction, probability, date, pdf_file) VALUES (?, ?, ?, ?, ?, ?)",
-                  (username, name, pred, f"{prob:.1f}", datetime.now().strftime("%Y-%m-%d %H:%M"), pdf_file))
+                  (username, clean_name, clean_pred, clean_prob, current_date, pdf_file))
         conn.commit()
         success = True
+        print(f"Hasta kaydedildi: {clean_name}")  # Debug için
     except Exception as e:
-        st.error(f"Hasta kaydedilirken hata: {e}")
+        print(f"Hasta kaydedilirken hata: {e}")  # Debug için
         success = False
     finally:
         conn.close()
@@ -274,20 +293,28 @@ def generate_pdf(patient_name, result_class, result_prob, df_probs, doktor, expl
         pdf.add_page()
         
         # Başlık
-        pdf.chapter_title("Perisentez Tahmin Raporu")
+        title = "Perisentez Tahmin Raporu"
+        pdf.chapter_title(title)
         
         pdf.ln(10)
         pdf.set_font("Arial", '', 12)
         
-        # Hasta bilgileri - Türkçe karakterleri temizle
-        clean_patient_name = sanitize_text(patient_name)
-        clean_result_class = sanitize_text(result_class)
-        clean_doktor = sanitize_text(doktor)
+        # Hasta bilgileri - Tüm metinleri temizle
+        clean_patient_name = sanitize_text(str(patient_name))
+        clean_result_class = sanitize_text(str(result_class))
+        clean_doktor = sanitize_text(str(doktor))
         
-        pdf.cell(200, 10, txt=f"Hasta Adi: {clean_patient_name}", ln=True)
-        pdf.cell(200, 10, txt=f"Tahmin Edilen Sendrom: {clean_result_class} ({result_prob:.1f}%)", ln=True)
-        pdf.cell(200, 10, txt=f"Doktor: {clean_doktor}", ln=True)
-        pdf.cell(200, 10, txt=f"Tarih: {datetime.now().strftime('%Y-%m-%d %H:%M')}", ln=True)
+        # Güvenli metin oluşturma
+        patient_line = f"Hasta Adi: {clean_patient_name}"
+        result_line = f"Tahmin Edilen Sendrom: {clean_result_class} ({result_prob:.1f}%)"
+        doctor_line = f"Doktor: {clean_doktor}"
+        date_line = f"Tarih: {datetime.now().strftime('%Y-%m-%d %H:%M')}"
+        
+        # Her satırı ayrı ayrı ekle
+        pdf.cell(200, 10, txt=patient_line, ln=True)
+        pdf.cell(200, 10, txt=result_line, ln=True)
+        pdf.cell(200, 10, txt=doctor_line, ln=True)
+        pdf.cell(200, 10, txt=date_line, ln=True)
         
         pdf.ln(5)
         pdf.cell(200, 10, txt="Tum Olasiliklar:", ln=True)
@@ -295,28 +322,55 @@ def generate_pdf(patient_name, result_class, result_prob, df_probs, doktor, expl
         # Açıklama ekle
         if explanation:
             pdf.ln(5)
-            clean_explanation = sanitize_text(explanation)
-            pdf.multi_cell(0, 8, clean_explanation)
+            # Açıklamayı temizle ve sadeleştir
+            clean_explanation = sanitize_text(str(explanation))
+            # Uzun metinleri böl
+            if len(clean_explanation) > 200:
+                clean_explanation = clean_explanation[:200] + "..."
+            
+            try:
+                pdf.multi_cell(0, 8, clean_explanation)
+            except:
+                # Eğer hala sorun varsa basit bir metin yaz
+                pdf.multi_cell(0, 8, "Analiz yorumu mevcuttur.")
         
         pdf.ln(5)
         
         # Olasılık tablosu
         for _, row in df_probs.iterrows():
-            clean_syndrome = sanitize_text(row['Sendrom'])
-            pdf.cell(200, 10, txt=f"{clean_syndrome}: {row['Olasılık (%)']}%", ln=True)
+            try:
+                clean_syndrome = sanitize_text(str(row['Sendrom']))
+                probability_value = float(row['Olasılık (%)'])
+                line_text = f"{clean_syndrome}: {probability_value:.1f}%"
+                pdf.cell(200, 10, txt=line_text, ln=True)
+            except Exception as e:
+                # Eğer bir satırda sorun varsa atla
+                continue
         
         pdf.ln(10)
-        pdf.multi_cell(0, 10, "Bu rapor on tani amaclidir. Kesin tani icin genetik danismanlık onerilir.")
+        disclaimer = "Bu rapor on tani amaclidir. Kesin tani icin genetik danismanlık onerilir."
+        pdf.multi_cell(0, 10, disclaimer)
         
         # Dosya adını güvenli hale getir
-        safe_patient_name = sanitize_text(patient_name).replace(' ', '_')
+        safe_patient_name = sanitize_text(str(patient_name)).replace(' ', '_')
+        # Dosya adında da sorun çıkmasın diye sadece alfanumerik karakterler
+        safe_patient_name = ''.join(c for c in safe_patient_name if c.isalnum() or c in '_-')
+        if not safe_patient_name:
+            safe_patient_name = "hasta"
+        
         fname = f"rapor_{safe_patient_name}_{uuid.uuid4().hex[:4]}.pdf"
         
+        # PDF'i kaydet
         pdf.output(fname)
-        return fname
+        
+        # Dosyanın gerçekten oluştuğunu kontrol et
+        if os.path.exists(fname):
+            return fname
+        else:
+            return None
         
     except Exception as e:
-        st.error(f"PDF oluşturulurken hata: {e}")
+        print(f"PDF oluşturma hatası: {e}")  # Debug için
         return None
 
 def login_screen():
@@ -383,8 +437,18 @@ def view_patient_history(username):
     # Hasta verilerini yükle
     data = load_patients(username, search.strip() if search else None)
     
+    # Debug bilgisi ekle
+    st.write(f"Debug: {len(data)} kayıt bulundu")
+    
     if not data:
         st.info("📭 Henüz kayıtlı hasta bulunmuyor.")
+        # Veritabanında gerçekten kayıt var mı kontrol et
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        c.execute("SELECT COUNT(*) FROM patients WHERE username = ?", (username,))
+        total_count = c.fetchone()[0]
+        conn.close()
+        st.write(f"Debug: Toplam {total_count} kayıt var veritabanında")
         return
 
     st.markdown(f"**Toplam {len(data)} hasta kaydı bulundu**")
@@ -611,10 +675,12 @@ def main_app():
                 try:
                     pdf_file = generate_pdf(patient_name, top_class, top_prob, df_probs, st.session_state.username, explanation)
                     
-                    if pdf_file:
+                    if pdf_file and os.path.exists(pdf_file):
                         # Hasta kaydını veritabanına ekle
                         if save_patient(st.session_state.username, patient_name, top_class, top_prob, pdf_file):
                             st.success("✅ Hasta kaydı başarıyla veritabanına eklendi.")
+                        else:
+                            st.warning("⚠️ Hasta kaydı yapılamadı.")
                         
                         st.markdown("### 📄 Rapor İndirme")
                         with open(pdf_file, "rb") as f:
@@ -622,16 +688,22 @@ def main_app():
                                              file_name=f"Perisentez_Raporu_{sanitize_text(patient_name).replace(' ', '_')}.pdf", 
                                              mime="application/pdf", use_container_width=True)
                     else:
-                        st.error("❌ PDF oluşturulamadı, ancak tahmin başarıyla tamamlandı.")
-                    
-                except Exception as e:
-                    st.warning(f"⚠️ PDF oluşturulamadı: {e}")
-                    # PDF oluşturulamasa bile hasta kaydını kaydetmeye çalış
-                    try:
+                        st.error("❌ PDF oluşturulamadı.")
+                        # PDF oluşturulamasa bile hasta kaydını kaydetmeye çalış
                         if save_patient(st.session_state.username, patient_name, top_class, top_prob, ""):
                             st.info("📝 Hasta kaydı PDF olmadan kaydedildi.")
+                        else:
+                            st.error("❌ Hasta kaydı da yapılamadı.")
+                    
+                except Exception as e:
+                    st.error(f"⚠️ PDF/Kayıt hatası: {e}")
+                    # Son çare: En basit şekilde hasta kaydını yap
+                    try:
+                        simple_name = ''.join(c for c in patient_name if c.isalnum() or c.isspace())
+                        if save_patient(st.session_state.username, simple_name, top_class, top_prob, ""):
+                            st.info("📝 Hasta kaydı basit formatta kaydedildi.")
                     except Exception as save_error:
-                        st.error(f"Hasta kaydı da yapılamadı: {save_error}")
+                        st.error(f"❌ Hiçbir kayıt yapılamadı: {save_error}")
 
             except Exception as e:
                 st.error(f"❌ Tahmin sırasında hata oluştu: {e}")
