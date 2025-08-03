@@ -64,7 +64,8 @@ Uygulama, artık sadece prototip değil; klinik kullanıma hazır bir **karar de
 - Kadın doğum doktorları  
 - Tıp fakültesi öğrencileri  
 - Genetik danışmanlar  
-- Medikal AI sistemleri geliştirmek isteyen araştırmacılar  
+- Medikal AI sistemleri geliştirmek isteyen araştırmacılar
+- Radyoloji Uzmanları
 
 ---
 
