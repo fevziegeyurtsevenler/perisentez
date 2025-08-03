@@ -216,11 +216,20 @@ def save_patient(username, name, pred, prob, pdf_file):
     try:
         conn = sqlite3.connect(DB_PATH)
         c = conn.cursor()
-        c.execute("INSERT INTO patients (username, patient_name, prediction, probability, date, pdf_file) VALUES (?, ?, ?, ?, ?, ?)",
-                  (username, sanitize_text(name), sanitize_text(pred), f"%{prob:.1f}", datetime.now().strftime("%Y-%m-%d %H:%M"), pdf_file))
+        c.execute("""
+            INSERT INTO patients (username, patient_name, prediction, probability, date, pdf_file)
+            VALUES (?, ?, ?, ?, ?, ?)
+        """, (
+            sanitize_text(username),
+            sanitize_text(name),
+            sanitize_text(pred),
+            f"%{prob:.1f}",
+            datetime.now().strftime("%Y-%m-%d %H:%M"),
+            pdf_file
+        ))
         conn.commit()
     except Exception as e:
-        st.error(f"Hasta kaydedilirken hata oluştu: {e}")
+        st.error(f"❌ Hasta kaydedilirken hata oluştu: {e}")
     finally:
         conn.close()
 
@@ -236,6 +245,9 @@ def generate_pdf(patient_name, result_class, result_prob, df_probs, doktor, expl
     pdf.cell(200, 10, txt=sanitize_text(f"Tahmin Edilen Sendrom: {result_class} (%{result_prob:.1f})"), ln=True)
     pdf.cell(200, 10, txt=sanitize_text(f"Doktor: {doktor}"), ln=True)
     pdf.cell(200, 10, txt=sanitize_text(f"Tarih: {datetime.now().strftime('%Y-%m-%d %H:%M')}"), ln=True)
+
+    pdf.ln(5)
+    pdf.cell(200, 10, txt=sanitize_text("Tüm Olasılıklar:"), ln=True)
 
     if explanation:
         pdf.ln(5)
@@ -260,8 +272,8 @@ def login_screen():
         </div>
     """, unsafe_allow_html=True)
 
-    # Logo kaldırıldı (st.image kısmı silindi)
-    
+    # LOGO KALDIRILDI → logo.jpeg çağrısı silindi
+
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
         st.markdown("### 🔐 Doktor Giriş Paneli")
@@ -274,10 +286,11 @@ def login_screen():
                 if validate_login(username, hash_password(password)):
                     st.session_state.authenticated = True
                     st.session_state.username = username
-                    st.success("Giriş başarılı! Yönlendiriliyorsunuz...")
+                    st.success("✅ Giriş başarılı! Yönlendiriliyorsunuz...")
                     st.rerun()
                 else:
                     st.error("❌ Hatalı kullanıcı adı veya şifre!")
+
 
 
 def register_screen():
