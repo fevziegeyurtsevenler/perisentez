@@ -27,7 +27,7 @@ Perisentez, prenatal (doğum öncesi) dönemde ultrason ve serum bulgularına g�
 
 Uygulama, hekimin girdiği bulguları makine öğrenmesi modeliyle değerlendirir, olası sendromları güven oranlarıyla sıralar ve yapay zekâ açıklamaları ile hekimlere karar sürecinde rehberlik eder.  
 
-Son sprintte eklenen **Google Gemini Pro** ve **OpenAI GPT-3.5 Turbo chatbot** entegrasyonları sayesinde hekimler uygulama içinden medikal danışmanlık alabilir. Ayrıca **HTML tabanlı modern raporlama** ile hasta sonuçları renk kodlu risk etiketleriyle sunulup kolayca paylaşılabilir hale gelmiştir.  
+**Google Gemini** entegrasyonu sayesinde hekimler uygulama içinden medikal danışmanlık alabilir. Ayrıca **HTML tabanlı modern raporlama** ile hasta sonuçları renk kodlu risk etiketleriyle sunulup kolayca paylaşılabilir hale gelmiştir.  
 
 Uygulama, artık sadece prototip değil; klinik kullanıma hazır bir **karar destek sistemi**dir.  
 
