@@ -1,11 +1,4 @@
-# HTML raporu oluştur ve kaydet
-                try:
-                    report_file = generate_html_report(patient_name, top_class, top_prob, df_probs, st.session_state.username, explanation)
-                    
-                    if report_file and os.path.exists(report_file):
-                        # Hasta kaydını veritabanına ekle
-                        if save_patient(st.session_state.username, patient_name, top_class, top_prob, report_file):
-                            st.success("✅import streamlit as st
+import streamlit as st
 import pandas as pd
 import joblib
 import uuid
@@ -425,8 +418,6 @@ def delete_patient(pid):
     finally:
         conn.close()
 
-
-
 def login_screen():
     st.markdown("""
         <div style="text-align: center; padding: 2rem;">
@@ -434,8 +425,6 @@ def login_screen():
             <p style="font-size: 1.2rem; color: #666;">Prenatal Genetik Analiz Platformu</p>
         </div>
     """, unsafe_allow_html=True)
-    
-    # Logo kodu kaldırıldı
     
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
