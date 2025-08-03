@@ -187,7 +187,7 @@ AI entegrasyonu, HTML raporlama ve kullanıcı deneyimi iyileştirmeleriyle ür�
 
 ## Sprint Notları
 - 📄 PDF yerine **HTML raporlama sistemi**  
-- 🤖 **Gemini Pro & GPT-3.5 Turbo chatbot entegrasyonu**  
+- 🤖 **Gemini entegrasyonu**  
 - 🧠 **Geliştirilmiş yapay zekâ açıklama modülü**  
 - 🎨 **UI iyileştirmeleri** (risk etiketleri, modern tasarım)  
 - 💾 **SQLite hasta geçmişi ve güvenlik**
