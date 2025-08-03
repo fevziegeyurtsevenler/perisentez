@@ -92,6 +92,9 @@ Uygulama, artık sadece prototip değil; klinik kullanıma hazır bir **karar de
 
 📘 [Perisentez Kullanım Kılavuzu (PDF)](https://github.com/fevziegeyurtsevenler/perisentez/raw/main/Kullanım%20Kılavuzu.pdf)
 
+🎥 [Perisentez Tanıtım Videosu (YouTube)](https://www.youtube.com/watch?v=br2Xd0sz3Hs)
+
+📄 [Sendrom Açıklamaları (PDF)](https://github.com/fevziegeyurtsevenler/perisentez/raw/main/Sendrom%20Açıklamaları.pdf)
 
 ---
 
