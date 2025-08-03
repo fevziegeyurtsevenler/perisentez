@@ -1,4 +1,11 @@
-import streamlit as st
+# HTML raporu oluştur ve kaydet
+                try:
+                    report_file = generate_html_report(patient_name, top_class, top_prob, df_probs, st.session_state.username, explanation)
+                    
+                    if report_file and os.path.exists(report_file):
+                        # Hasta kaydını veritabanına ekle
+                        if save_patient(st.session_state.username, patient_name, top_class, top_prob, report_file):
+                            st.success("✅import streamlit as st
 import pandas as pd
 import joblib
 import uuid
@@ -6,76 +13,211 @@ import os
 import hashlib
 import sqlite3
 import matplotlib.pyplot as plt
-from fpdf import FPDF 
 from datetime import datetime
 import requests
 import json
+import base64
 
-def sanitize_text(text):
-    """Türkçe karakterleri ve tüm non-ASCII karakterleri ASCII karakterlere dönüştürür"""
-    if text is None:
-        return ""
-    
-    result = str(text)
-    
-    # Türkçe karakterleri değiştir
-    replacements = {
-        'ı': 'i', 'İ': 'I', 'ş': 's', 'Ş': 'S',
-        'ç': 'c', 'Ç': 'C', 'ğ': 'g', 'Ğ': 'G',
-        'ü': 'u', 'Ü': 'U', 'ö': 'o', 'Ö': 'O',
-        'â': 'a', 'Â': 'A', 'î': 'i', 'Î': 'I',
-        'û': 'u', 'Û': 'U', 'ô': 'o', 'Ô': 'O'
-    }
-    
-    for turkish, english in replacements.items():
-        result = result.replace(turkish, english)
-    
-    # Tüm non-ASCII karakterleri kaldır veya değiştir
+def generate_html_report(patient_name, result_class, result_prob, df_probs, doktor, explanation=None):
+    """HTML raporu oluşturur - PDF yerine daha güvenilir"""
     try:
-        # ASCII olmayan karakterleri kaldır
-        result = result.encode('ascii', 'ignore').decode('ascii')
-    except:
-        # Son çare: sadece ASCII karakterleri tut
-        result = ''.join(char for char in result if ord(char) < 128)
-    
-    return result
-
-class PDF(FPDF):
-    def __init__(self):
-        super().__init__()
-        # Sadece ASCII karakterler kullanacağız
-        self.set_font("Arial", '', 12)
-
-    def chapter_title(self, title):
-        self.set_font("Arial", 'B', 14)
-        # Türkçe karakterleri temizle
-        clean_title = sanitize_text(title)
-        self.multi_cell(0, 10, txt=clean_title, align='C')
-        self.ln(5)
-
-    def chapter_body(self, body):
-        self.set_font("Arial", '', 12)
-        # Türkçe karakterleri temizle
-        clean_body = sanitize_text(body)
-        self.multi_cell(0, 8, txt=clean_body)
-        self.ln()
+        # HTML template
+        html_content = f"""
+        <!DOCTYPE html>
+        <html lang="tr">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Perisentez Tahmin Raporu</title>
+            <style>
+                body {{
+                    font-family: Arial, sans-serif;
+                    margin: 40px;
+                    line-height: 1.6;
+                    color: #333;
+                }}
+                .header {{
+                    text-align: center;
+                    border-bottom: 2px solid #4A7C59;
+                    padding-bottom: 20px;
+                    margin-bottom: 30px;
+                }}
+                .title {{
+                    color: #4A7C59;
+                    font-size: 24px;
+                    font-weight: bold;
+                    margin-bottom: 10px;
+                }}
+                .info-section {{
+                    background-color: #f8f9fa;
+                    padding: 20px;
+                    border-radius: 8px;
+                    margin-bottom: 20px;
+                }}
+                .result-highlight {{
+                    background-color: #e8f5e8;
+                    border-left: 4px solid #4A7C59;
+                    padding: 15px;
+                    margin: 20px 0;
+                }}
+                .probability-table {{
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-top: 20px;
+                }}
+                .probability-table th, .probability-table td {{
+                    border: 1px solid #ddd;
+                    padding: 12px;
+                    text-align: left;
+                }}
+                .probability-table th {{
+                    background-color: #4A7C59;
+                    color: white;
+                }}
+                .probability-table tr:nth-child(even) {{
+                    background-color: #f2f2f2;
+                }}
+                .explanation {{
+                    background-color: #fff3cd;
+                    border: 1px solid #ffeaa7;
+                    padding: 15px;
+                    border-radius: 5px;
+                    margin: 20px 0;
+                }}
+                .footer {{
+                    margin-top: 40px;
+                    padding-top: 20px;
+                    border-top: 1px solid #ddd;
+                    font-style: italic;
+                    color: #666;
+                }}
+                .risk-level {{
+                    display: inline-block;
+                    padding: 5px 10px;
+                    border-radius: 4px;
+                    font-weight: bold;
+                    color: white;
+                }}
+                .high-risk {{ background-color: #dc3545; }}
+                .medium-risk {{ background-color: #ffc107; color: #000; }}
+                .low-risk {{ background-color: #28a745; }}
+            </style>
+        </head>
+        <body>
+            <div class="header">
+                <div class="title">🧬 Perisentez Tahmin Raporu</div>
+                <p>Prenatal Genetik Analiz Sonuçları</p>
+            </div>
+            
+            <div class="info-section">
+                <h3>👤 Hasta Bilgileri</h3>
+                <p><strong>Hasta Adı:</strong> {patient_name}</p>
+                <p><strong>Doktor:</strong> {doktor}</p>
+                <p><strong>Rapor Tarihi:</strong> {datetime.now().strftime('%d.%m.%Y %H:%M')}</p>
+            </div>
+            
+            <div class="result-highlight">
+                <h3>🎯 Ana Tahmin Sonucu</h3>
+                <p><strong>Öngörülen Sendrom:</strong> {result_class}</p>
+                <p><strong>Güven Oranı:</strong> %{result_prob:.1f}</p>
+                <p><strong>Risk Seviyesi:</strong> 
+                    <span class="risk-level {'high-risk' if result_prob > 70 else 'medium-risk' if result_prob > 50 else 'low-risk'}">
+                        {'Yüksek Risk' if result_prob > 70 else 'Orta Risk' if result_prob > 50 else 'Düşük Risk'}
+                    </span>
+                </p>
+            </div>
+        """
+        
+        # Açıklama varsa ekle
+        if explanation:
+            html_content += f"""
+            <div class="explanation">
+                <h4>💡 AI Analiz Yorumu</h4>
+                <p>{explanation}</p>
+            </div>
+            """
+        
+        # Olasılık tablosu
+        html_content += """
+            <h3>📊 Detaylı Olasılık Analizi</h3>
+            <table class="probability-table">
+                <thead>
+                    <tr>
+                        <th>Sendrom</th>
+                        <th>Olasılık (%)</th>
+                        <th>Değerlendirme</th>
+                    </tr>
+                </thead>
+                <tbody>
+        """
+        
+        # Olasılıkları sırala ve tabloya ekle
+        df_sorted = df_probs.sort_values(by="Olasılık (%)", ascending=False)
+        for idx, row in df_sorted.iterrows():
+            prob_val = row['Olasılık (%)']
+            evaluation = "Yüksek" if prob_val > 50 else "Orta" if prob_val > 20 else "Düşük"
+            html_content += f"""
+                    <tr>
+                        <td>{row['Sendrom']}</td>
+                        <td>%{prob_val:.2f}</td>
+                        <td>{evaluation}</td>
+                    </tr>
+            """
+        
+        html_content += """
+                </tbody>
+            </table>
+            
+            <div class="footer">
+                <p><strong>⚠️ Önemli Uyarı:</strong> Bu rapor ön tanı amaçlıdır ve kesin tanı için genetik danışmanlık önerilir. 
+                Sonuçlar yapay zeka algoritması tarafından oluşturulmuş olup, klinik karar vermede tek başına kullanılmamalıdır.</p>
+                <p><strong>Sistem:</strong> Perisentez AI Tahmin Sistemi v1.0</p>
+            </div>
+        </body>
+        </html>
+        """
+        
+        # Dosya adını güvenli hale getir
+        safe_name = ''.join(c for c in patient_name if c.isalnum() or c.isspace()).replace(' ', '_')
+        if not safe_name:
+            safe_name = "hasta"
+        
+        filename = f"rapor_{safe_name}_{uuid.uuid4().hex[:6]}.html"
+        
+        # HTML dosyasını kaydet
+        with open(filename, 'w', encoding='utf-8') as f:
+            f.write(html_content)
+        
+        return filename
+        
+    except Exception as e:
+        st.error(f"HTML raporu oluşturulurken hata: {e}")
+        return None
 
 def generate_explanation(values, predicted_syndrome):
+    """AI analiz yorumu oluştur"""
     comments = []
 
     if values.get("NT (Ense kalınlığı)", 0) > 3.5:
-        comments.append(f"Ense kalinligi {values['NT (Ense kalınlığı)']} mm olarak olculmus, bu deger 3.5 mm uzeri olup noral tup defekti veya trizomilerle iliskili olabilir.")
+        comments.append(f"Ense kalınlığı {values['NT (Ense kalınlığı)']} mm olarak ölçülmüş, bu değer 3.5 mm üzeri olup nöral tüp defekti veya trizomilerle ilişkili olabilir.")
+    
     if values.get("PAPP-A", 1) < 0.5:
-        comments.append(f"PAPP-A seviyesi {values['PAPP-A']} MoM ile dusuktur; bu durum Down sendromu riskini artirabilir.")
+        comments.append(f"PAPP-A seviyesi {values['PAPP-A']} MoM ile düşüktür; bu durum Down sendromu riskini artırabilir.")
+    
     if values.get("β-hCG", 0) > 2.0:
-        comments.append(f"beta-hCG degeri {values['β-hCG']} MoM ile normalin uzerindedir, bu da trizomi 21 (Down) ile uyumlu olabilir.")
+        comments.append(f"β-hCG değeri {values['β-hCG']} MoM ile normalin üzerindedir, bu da trizomi 21 (Down) ile uyumlu olabilir.")
+    
     if values.get("FL (Femur uzunluğu)", 1000) < 15:
-        comments.append(f"Femur uzunlugu {values['FL (Femur uzunluğu)']} mm olarak olculmus ve kisa olmasi kemik gelisim bozukluklarina isaret edebilir.")
+        comments.append(f"Femur uzunluğu {values['FL (Femur uzunluğu)']} mm olarak ölçülmüş ve kısa olması kemik gelişim bozukluklarına işaret edebilir.")
+    
+    if values.get("Anne yaşı", 0) > 35:
+        comments.append(f"Anne yaşı {values['Anne yaşı']} olup, ileri maternal yaş kromozomal anomali riskini artırır.")
 
     if comments:
-        explanation = "Yorum: " + " ".join(comments)
+        explanation = "📌 **Yorum:** " + " ".join(comments)
     else:
-        explanation = "Belirgin bir risk faktoru tespit edilmedi veya girilen verilerle dogrudan spesifik bir sendromla iliskilendirilebilecek yeterli bulguya ulasilamadi. Yapay zeka genel verilerle degerlendirme yapmistir."
+        explanation = "ℹ️ Belirgin bir risk faktörü tespit edilmedi. Girilen parametreler normal sınırlar içerisindedir. Yapay zeka modeli genel verilerle değerlendirme yapmıştır."
+    
     return explanation
 
 # Chatbot fonksiyonları
@@ -228,27 +370,23 @@ def validate_login(username, pw_hash):
     conn.close()
     return result
 
-def save_patient(username, name, pred, prob, pdf_file):
+def save_patient(username, name, pred, prob, report_file):
+    """Hasta kaydını veritabanına kaydet"""
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     try:
-        # Verileri temizle ve güvenli hale getir
-        clean_name = sanitize_text(str(name))
-        clean_pred = sanitize_text(str(pred))
-        clean_prob = f"{float(prob):.1f}"
         current_date = datetime.now().strftime("%Y-%m-%d %H:%M")
+        clean_prob = f"{float(prob):.1f}"
         
         c.execute("INSERT INTO patients (username, patient_name, prediction, probability, date, pdf_file) VALUES (?, ?, ?, ?, ?, ?)",
-                  (username, clean_name, clean_pred, clean_prob, current_date, pdf_file))
+                  (username, name, pred, clean_prob, current_date, report_file))
         conn.commit()
-        success = True
-        print(f"Hasta kaydedildi: {clean_name}")  # Debug için
+        return True
     except Exception as e:
-        print(f"Hasta kaydedilirken hata: {e}")  # Debug için
-        success = False
+        st.error(f"Hasta kaydedilirken hata: {e}")
+        return False
     finally:
         conn.close()
-    return success
 
 def load_patients(username, search=None):
     conn = sqlite3.connect(DB_PATH)
@@ -268,10 +406,11 @@ def load_patients(username, search=None):
     return rows
 
 def delete_patient(pid):
+    """Hasta kaydını sil"""
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     try:
-        # PDF dosyasını da sil
+        # Rapor dosyasını da sil
         c.execute("SELECT pdf_file FROM patients WHERE id = ?", (pid,))
         result = c.fetchone()
         if result and result[0] and os.path.exists(result[0]):
@@ -279,99 +418,14 @@ def delete_patient(pid):
         
         c.execute("DELETE FROM patients WHERE id = ?", (pid,))
         conn.commit()
-        success = True
+        return True
     except Exception as e:
         st.error(f"Hasta silinirken hata: {e}")
-        success = False
+        return False
     finally:
         conn.close()
-    return success
 
-def generate_pdf(patient_name, result_class, result_prob, df_probs, doktor, explanation=None):
-    try:
-        pdf = PDF()
-        pdf.add_page()
-        
-        # Başlık
-        title = "Perisentez Tahmin Raporu"
-        pdf.chapter_title(title)
-        
-        pdf.ln(10)
-        pdf.set_font("Arial", '', 12)
-        
-        # Hasta bilgileri - Tüm metinleri temizle
-        clean_patient_name = sanitize_text(str(patient_name))
-        clean_result_class = sanitize_text(str(result_class))
-        clean_doktor = sanitize_text(str(doktor))
-        
-        # Güvenli metin oluşturma
-        patient_line = f"Hasta Adi: {clean_patient_name}"
-        result_line = f"Tahmin Edilen Sendrom: {clean_result_class} ({result_prob:.1f}%)"
-        doctor_line = f"Doktor: {clean_doktor}"
-        date_line = f"Tarih: {datetime.now().strftime('%Y-%m-%d %H:%M')}"
-        
-        # Her satırı ayrı ayrı ekle
-        pdf.cell(200, 10, txt=patient_line, ln=True)
-        pdf.cell(200, 10, txt=result_line, ln=True)
-        pdf.cell(200, 10, txt=doctor_line, ln=True)
-        pdf.cell(200, 10, txt=date_line, ln=True)
-        
-        pdf.ln(5)
-        pdf.cell(200, 10, txt="Tum Olasiliklar:", ln=True)
-        
-        # Açıklama ekle
-        if explanation:
-            pdf.ln(5)
-            # Açıklamayı temizle ve sadeleştir
-            clean_explanation = sanitize_text(str(explanation))
-            # Uzun metinleri böl
-            if len(clean_explanation) > 200:
-                clean_explanation = clean_explanation[:200] + "..."
-            
-            try:
-                pdf.multi_cell(0, 8, clean_explanation)
-            except:
-                # Eğer hala sorun varsa basit bir metin yaz
-                pdf.multi_cell(0, 8, "Analiz yorumu mevcuttur.")
-        
-        pdf.ln(5)
-        
-        # Olasılık tablosu
-        for _, row in df_probs.iterrows():
-            try:
-                clean_syndrome = sanitize_text(str(row['Sendrom']))
-                probability_value = float(row['Olasılık (%)'])
-                line_text = f"{clean_syndrome}: {probability_value:.1f}%"
-                pdf.cell(200, 10, txt=line_text, ln=True)
-            except Exception as e:
-                # Eğer bir satırda sorun varsa atla
-                continue
-        
-        pdf.ln(10)
-        disclaimer = "Bu rapor on tani amaclidir. Kesin tani icin genetik danismanlık onerilir."
-        pdf.multi_cell(0, 10, disclaimer)
-        
-        # Dosya adını güvenli hale getir
-        safe_patient_name = sanitize_text(str(patient_name)).replace(' ', '_')
-        # Dosya adında da sorun çıkmasın diye sadece alfanumerik karakterler
-        safe_patient_name = ''.join(c for c in safe_patient_name if c.isalnum() or c in '_-')
-        if not safe_patient_name:
-            safe_patient_name = "hasta"
-        
-        fname = f"rapor_{safe_patient_name}_{uuid.uuid4().hex[:4]}.pdf"
-        
-        # PDF'i kaydet
-        pdf.output(fname)
-        
-        # Dosyanın gerçekten oluştuğunu kontrol et
-        if os.path.exists(fname):
-            return fname
-        else:
-            return None
-        
-    except Exception as e:
-        print(f"PDF oluşturma hatası: {e}")  # Debug için
-        return None
+
 
 def login_screen():
     st.markdown("""
@@ -423,6 +477,7 @@ def register_screen():
                     st.error("❌ Bu kullanıcı adı zaten mevcut!")
 
 def view_patient_history(username):
+    """Hasta geçmişini görüntüle"""
     st.markdown("## 📋 Hasta Kayıtları")
     
     col1, col2 = st.columns([3, 1])
@@ -437,24 +492,22 @@ def view_patient_history(username):
     # Hasta verilerini yükle
     data = load_patients(username, search.strip() if search else None)
     
-    # Debug bilgisi ekle
-    st.write(f"Debug: {len(data)} kayıt bulundu")
-    
     if not data:
         st.info("📭 Henüz kayıtlı hasta bulunmuyor.")
-        # Veritabanında gerçekten kayıt var mı kontrol et
+        # Debug: Toplam kayıt sayısını kontrol et
         conn = sqlite3.connect(DB_PATH)
         c = conn.cursor()
         c.execute("SELECT COUNT(*) FROM patients WHERE username = ?", (username,))
         total_count = c.fetchone()[0]
         conn.close()
-        st.write(f"Debug: Toplam {total_count} kayıt var veritabanında")
+        if total_count > 0:
+            st.warning(f"Veritabanında {total_count} kayıt var ama görüntülenemiyor. Arama kriterini kontrol edin.")
         return
 
-    st.markdown(f"**Toplam {len(data)} hasta kaydı bulundu**")
+    st.markdown(f"**📊 Toplam {len(data)} hasta kaydı bulundu**")
     
     for i, row in enumerate(data):
-        pid, _, name, pred, prob, date, pdf = row
+        pid, _, name, pred, prob, date, report_file = row
         
         with st.container():
             st.markdown("---")
@@ -469,21 +522,33 @@ def view_patient_history(username):
                 st.markdown(f"📊 **Olasılık:** `%{prob}`")
             
             with col3:
-                if pdf and os.path.exists(pdf):
+                if report_file and os.path.exists(report_file):
                     try:
-                        with open(pdf, "rb") as f:
-                            st.download_button("📄 PDF İndir", f, file_name=os.path.basename(pdf), 
-                                             key=f"pdf_{pid}_{i}", use_container_width=True)
+                        with open(report_file, "rb") as f:
+                            file_extension = os.path.splitext(report_file)[1].lower()
+                            mime_type = "text/html" if file_extension == ".html" else "application/pdf"
+                            download_name = f"Rapor_{name.replace(' ', '_')}{file_extension}"
+                            
+                            st.download_button(
+                                "📄 Rapor İndir", 
+                                f, 
+                                file_name=download_name,
+                                mime=mime_type,
+                                key=f"report_{pid}_{i}", 
+                                use_container_width=True
+                            )
                     except Exception as e:
-                        st.warning(f"PDF okunamadı: {e}")
+                        st.warning(f"Dosya okunamadı: {e}")
                 else:
-                    st.warning("📄 PDF bulunamadı")
+                    st.warning("📄 Rapor bulunamadı")
             
             with col4:
                 if st.button("🗑️ Sil", key=f"del_{pid}_{i}", use_container_width=True):
                     if delete_patient(pid):
                         st.success("✅ Hasta kaydı silindi.")
                         st.rerun()
+                    else:
+                        st.error("❌ Silme işlemi başarısız.")
 
 def safe_encode_categorical(df, encoders):
     """Kategorik değişkenleri güvenli bir şekilde encode eder"""
@@ -671,36 +736,47 @@ def main_app():
                 except Exception as e:
                     st.warning(f"Grafik çizilemedi: {e}")
 
-                # PDF oluştur ve kaydet
+                # HTML raporu oluştur ve kaydet
                 try:
-                    pdf_file = generate_pdf(patient_name, top_class, top_prob, df_probs, st.session_state.username, explanation)
+                    report_file = generate_html_report(patient_name, top_class, top_prob, df_probs, st.session_state.username, explanation)
                     
-                    if pdf_file and os.path.exists(pdf_file):
+                    if report_file and os.path.exists(report_file):
                         # Hasta kaydını veritabanına ekle
-                        if save_patient(st.session_state.username, patient_name, top_class, top_prob, pdf_file):
+                        if save_patient(st.session_state.username, patient_name, top_class, top_prob, report_file):
                             st.success("✅ Hasta kaydı başarıyla veritabanına eklendi.")
                         else:
                             st.warning("⚠️ Hasta kaydı yapılamadı.")
                         
                         st.markdown("### 📄 Rapor İndirme")
-                        with open(pdf_file, "rb") as f:
-                            st.download_button("📥 PDF Raporunu İndir", f, 
-                                             file_name=f"Perisentez_Raporu_{sanitize_text(patient_name).replace(' ', '_')}.pdf", 
-                                             mime="application/pdf", use_container_width=True)
+                        # HTML dosyasını okuyup indirme butonu oluştur
+                        with open(report_file, "rb") as f:
+                            st.download_button(
+                                "📥 HTML Raporunu İndir", 
+                                f, 
+                                file_name=f"Perisentez_Raporu_{patient_name.replace(' ', '_')}.html", 
+                                mime="text/html", 
+                                use_container_width=True
+                            )
+                        
+                        # Raporu inline olarak gösterme seçeneği
+                        if st.checkbox("📖 Raporu burada göster"):
+                            with open(report_file, "r", encoding='utf-8') as f:
+                                html_content = f.read()
+                            st.components.v1.html(html_content, height=800, scrolling=True)
+                            
                     else:
-                        st.error("❌ PDF oluşturulamadı.")
-                        # PDF oluşturulamasa bile hasta kaydını kaydetmeye çalış
+                        st.error("❌ Rapor oluşturulamadı.")
+                        # Rapor oluşturulamasa bile hasta kaydını kaydetmeye çalış
                         if save_patient(st.session_state.username, patient_name, top_class, top_prob, ""):
-                            st.info("📝 Hasta kaydı PDF olmadan kaydedildi.")
+                            st.info("📝 Hasta kaydı rapor olmadan kaydedildi.")
                         else:
                             st.error("❌ Hasta kaydı da yapılamadı.")
                     
                 except Exception as e:
-                    st.error(f"⚠️ PDF/Kayıt hatası: {e}")
+                    st.error(f"⚠️ Rapor/Kayıt hatası: {e}")
                     # Son çare: En basit şekilde hasta kaydını yap
                     try:
-                        simple_name = ''.join(c for c in patient_name if c.isalnum() or c.isspace())
-                        if save_patient(st.session_state.username, simple_name, top_class, top_prob, ""):
+                        if save_patient(st.session_state.username, patient_name, top_class, top_prob, ""):
                             st.info("📝 Hasta kaydı basit formatta kaydedildi.")
                     except Exception as save_error:
                         st.error(f"❌ Hiçbir kayıt yapılamadı: {save_error}")
