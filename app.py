@@ -550,10 +550,10 @@ def main_app():
     st.markdown("*Prenatal genetik analiz ve sendrom tahmini için gelişmiş AI sistemi*")
 
     try:
-        model = joblib.load(r"C:\Users\Sema\Desktop\Bootcamp\yeni\model.pkl")
-        encoders = joblib.load(r"C:\Users\Sema\Desktop\Bootcamp\yeni\feature_encoders.pkl")
-        target_encoder = joblib.load(r"C:\Users\Sema\Desktop\Bootcamp\yeni\target_encoder.pkl")
-        feature_order = joblib.load(r"C:\Users\Sema\Desktop\Bootcamp\yeni\features.pkl")
+        model = joblib.load("model.pkl")
+        encoders = joblib.load(feature_encoders.pkl")
+        target_encoder = joblib.load(target_encoder.pkl")
+        feature_order = joblib.load(features.pkl")
     except FileNotFoundError as e:
         st.error(f"❌ Model dosyaları bulunamadı: {e}")
         st.info("📝 Lütfen 'model_train.py' dosyasını çalıştırarak modelleri oluşturun.")
@@ -828,3 +828,4 @@ else:
         main_app()
     elif st.session_state.current_page == "chatbot":
         chatbot_interface()
+
