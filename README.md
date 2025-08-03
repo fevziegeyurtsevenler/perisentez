@@ -2,303 +2,220 @@
   <img src="https://raw.githubusercontent.com/fevziegeyurtsevenler/perisentez/main/logo.jpeg" width="250" alt="Perisentez Logo"/>
 </p>
 
+# Perisentez
 
-
-## Takım İsmi
+## 👥 Takım İsmi
 **Timpossible**
 
-## Takım Elemanları
+## 👩‍💻 Takım Elemanları
 
-| Name                | Title          | Social                                                           |
-| :------------------ | :------------- | :--------------------------------------------------------------- |
-| Feyza Hilal Şahin | Product Owner   | [LinkedIn](https://tr.linkedin.com/in/feyza-hilal-%C5%9Fahin-153989210)     |
-| Fevzi Ege Yurtsevenler    | Scrum Master  | [LinkedIn](https://www.linkedin.com/in/fevziege/)         |
-| Sena Açıkgöz      | Developer      | [LinkedIn](https://www.linkedin.com/in/sena-açıkgöz00)          |
-| Semanur Büdün      | Developer      | [LinkedIn](https://www.linkedin.com/in/semanur-budun)          |
-| Tarık Anafarta      | Developer      | [LinkedIn](https://www.linkedin.com/in/tarik-anafarta)          |
+| Name                   | Title          | Social                                                                 |
+| :--------------------- | :------------- | :--------------------------------------------------------------------- |
+| Feyza Hilal Şahin      | Product Owner  | [LinkedIn](https://tr.linkedin.com/in/feyza-hilal-%C5%9Fahin-153989210) |
+| Fevzi Ege Yurtsevenler | Scrum Master   | [LinkedIn](https://www.linkedin.com/in/fevziege/)                      |
+| Sena Açıkgöz           | Developer      | [LinkedIn](https://www.linkedin.com/in/sena-açıkgöz00)                 |
+| Semanur Büdün          | Developer      | [LinkedIn](https://www.linkedin.com/in/semanur-budun)                  |
+| Tarık Anafarta         | Developer      | [LinkedIn](https://www.linkedin.com/in/tarik-anafarta)                 |
 
-## Ürün İsmi
-Perisentez
+---
 
-## Ürün Açıklaması
-Prenatal (doğum öncesi) dönemde ultrason bulgularına göre genetik sendrom tahmini yaparak, uzman hekimlere karar desteği sunan bir yapay zekâ tabanlı asistan sistemidir.
+## 🧬 Ürün İsmi
+**Perisentez**
 
-Uygulama, hekimin seçtiği fetal bulgularla veri tabanındaki sendromlar arasında benzerlik eşleştirmesi yaparak, olası sendromları sıralar. Bu sayede doğru tanıya daha hızlı ulaşılmasına katkı sağlar. Sistem aynı zamanda bulguların açıklamalarını sunarak, klinik süreci bilgi açısından da destekler.
-## Ürün Özellikleri
-Perisentez, prenatal dönemde ultrason bulgularına göre genetik sendrom tahmini yaparak, uzman hekimlere karar desteği sunan yapay zekâ tabanlı bir asistan sistemidir.
+## 📖 Ürün Açıklaması
+Perisentez, prenatal (doğum öncesi) dönemde ultrason ve serum bulgularına göre genetik sendrom tahmini yaparak, uzman hekimlere karar desteği sunan **yapay zekâ tabanlı bir asistan sistemidir**.  
 
-* **Prenatal Ultrason ve Serum Veri Girişi:**
-    * Kullanıcılar, gebelik haftası, ense kalınlığı (NT), femur uzunluğu (FL), serbest beta-hCG MoM ve PAPP-A MoM değerleri gibi sayısal prenatal verileri sisteme girebilir.
-    * Önemli yapısal anomaliler (hard marker'lar) listeden seçilebilir (örneğin, Atriyoventriküler septal defekt, Omfalosel, Holoprozensefali).
+Uygulama, hekimin girdiği bulguları makine öğrenmesi modeliyle değerlendirir, olası sendromları güven oranlarıyla sıralar ve yapay zekâ açıklamaları ile hekimlere karar sürecinde rehberlik eder.  
 
-* **Kural Tabanlı Sendrom Risk Değerlendirmesi:**
-    * Girilen sayısal değerler ve seçilen yapısal bulgulara dayanarak, önceden tanımlanmış tıbbi kurallar ve eşikler kullanılarak olası genetik sendromların riski hesaplanır.
-    * Sistem, her bir sendrom için sayısal ve yapısal bulguların eşleşme derecesine göre bir "tahmini eşleşme oranı" sunar.
+Son sprintte eklenen **Google Gemini Pro** ve **OpenAI GPT-3.5 Turbo chatbot** entegrasyonları sayesinde hekimler uygulama içinden medikal danışmanlık alabilir. Ayrıca **HTML tabanlı modern raporlama** ile hasta sonuçları renk kodlu risk etiketleriyle sunulup kolayca paylaşılabilir hale gelmiştir.  
 
-* **Potansiyel Sendromların Sıralı Listelenmesi:**
-    * Hesaplanan eşleşme oranına göre en olası sendromlar azalan sırada listelenir.
-    * Her bir sendrom için eşleşen spesifik bulgular açıkça belirtilir, bu da hekime kararı destekleyici bilgi sağlar.
+Uygulama, artık sadece prototip değil; klinik kullanıma hazır bir **karar destek sistemi**dir.  
 
-* **Açıklayıcı ve Uyarıcı Bilgilendirme:**
-    * Uygulamanın eğitim amaçlı bir prototip olduğu ve klinik karar alma süreçlerinin yalnızca uzman doktorlar tarafından yürütülmesi gerektiği vurgulanır.
-    * Sistemin kural tabanlı yapısı ve gerçek yapay zeka modellerinin karmaşıklığı hakkında genel bir açıklama sunulur.
+---
 
-## Hedef Kitle
-- Perinatoloji uzmanları
+## 🔑 Ürün Özellikleri
+- **Prenatal Veri Girişi**
+  - Gebelik haftası, ense kalınlığı (NT), femur uzunluğu (FL), β-hCG ve PAPP-A değerleri girilebilir.
+  - Önemli yapısal anomaliler listeden seçilebilir (ör. Omfalosel, Holoprozensefali, Kardiyak defekt).
 
-- Kadın doğum doktorları
+- **Makine Öğrenmesi ile Risk Analizi**
+  - Girilen bulgular ML modeli ile işlenir, olası sendromlar güven oranları ile listelenir.
 
-- Tıp fakültesi öğrencileri (özellikle prenatal tanı çalışanlar)
+- **Yapay Zekâ Açıklama Modülü**
+  - Bulgular için neden-sonuç ilişkisi açıklar.
+  - Risk faktörleri rapora eklenir.
 
-- Genetik danışmanlar
+- **Gemini & GPT Chatbot**
+  - Prenatal sendromlarla ilgili tıbbi danışmanlık sağlar.
+  - Hekimlere ek bilgi desteği sunar.
 
-- Yapay zekâ destekli tıbbi sistemler geliştirmek isteyen araştırmacılar
-## Product Backlog URL
-[Trello Backlog](https://trello.com/b/U1T5wQXG/prenatal-diagnosis-ai)
-## User Story
-Kullanıcı Tipi: Perinatoloji Uzmanı (Dr. Şeyda)
+- **Modern HTML Raporlama**
+  - Renk kodlu risk etiketleri ile açıklayıcı raporlar hazırlanır.
+  - Raporlar indirilebilir ve paylaşılabilir.
 
-User Story:
+- **Hasta Geçmişi Yönetimi**
+  - SQLite veritabanında kullanıcı bazlı kayıtlar saklanır.
+  - Geçmiş raporlara erişim ve indirme desteği bulunur.
+
+---
+
+## 🎯 Hedef Kitle
+- Perinatoloji uzmanları  
+- Kadın doğum doktorları  
+- Tıp fakültesi öğrencileri  
+- Genetik danışmanlar  
+- Medikal AI sistemleri geliştirmek isteyen araştırmacılar  
+
+---
+
+## 📌 Product Backlog
+[📌 Trello Backlog](https://trello.com/b/U1T5wQXG/prenatal-diagnosis-ai)
+
+---
+
+## 🧑‍⚕️ User Story
+**Kullanıcı Tipi:** Perinatoloji Uzmanı (Dr. Şeyda)  
 
 “Bir perinatoloji uzmanı olarak, detaylı ultrason muayenesinde tespit ettiğim fetal bulguları sisteme girerek bu bulgularla en çok eşleşen genetik sendromların listesini görmek istiyorum. Böylece olası tanıları daha hızlı değerlendirebilir ve hastaya en uygun ileri test ve yönlendirmeyi yapabilirim.”
 
-Kabul Kriterleri:
-
-Kullanıcı, arama çubuğuna bulguları yazabilir ve sistem otomatik tamamlama önerileri sunar
-
-Girilen her bulgu sistem tarafından doğrulanarak standart tıbbi terimlere dönüştürülür
-
-"Analiz Et" butonuna basıldığında sistem ilk 3 olası sendromu benzerlik oranları ile sıralar
-
-Her sendrom için ICD kodu, fenotip tanımı ve açıklayıcı bilgiler gösterilir
-
-Listeleme sonucunda, her sendromun hangi bulgularla eşleştiği ayrı ayrı belirtilir
-
-Hekim bu bilgilerle daha bilinçli yönlendirmeler yapabilir (ör. NIPT, amniyosentez)
-
-## Kullanım
-
-Bu linkten ürünümüzü kullanabilirsiniz : https://perisentez.streamlit.app/
-
-
-
-# Sprint 1
-
-### Sprint Notları
-
-* **UI Tasarımları:** Sprint 1'de ayrı bir UI tasarım aracı kullanılmamıştır. Kullanıcı arayüzü, doğrudan Streamlit kütüphanesi kullanılarak (`perisentez.py` dosyası içerisinde) kodlanmıştır.
-* **Proje Yönetimi:** Proje yönetimi ve görev takibi için **Trello** platformu aktif olarak kullanılmıştır.
-* **Günlük Scrum Toplantıları:** Takım üyelerinin uygunluğuna göre **WhatsApp** grup sohbetleri ve **Google Meet** video konferansları üzerinden günlük scrum toplantıları gerçekleştirilmiştir.
-* **Uygulama Teması:** Uygulamanın görsel tasarımı için kod içinde belirlendiği üzere **koyu (dark) tema** tercih edilmiştir.
-* **Tasarım ve Uygulama Dili:** Uygulamanın arayüz metinleri ve çıktıları, hedef kitlenin ihtiyaçları doğrultusunda **Türkçe** olarak tasarlanmış ve geliştirilmiştir.
+**Kabul Kriterleri:**
+- Arama çubuğunda otomatik tamamlama
+- Girilen bulguların standart tıbbi terimlere dönüştürülmesi
+- İlk 3 olası sendromun güven oranları ile listelenmesi
+- ICD kodları ve fenotip açıklamaları
+- Hangi bulgularla eşleştiğinin belirtilmesi
 
 ---
 
-### Beklenen Puan Tamamlama
+## 🚀 Kullanım
+🔗 [Perisentez Uygulamasını Deneyin](https://perisentez.streamlit.app/)  
 
-* **Sprint 1 Hedefi:** 300 Puan
-* **Puan Tamamlama Mantığı:**
-    * Projenin genel tamamlanma hedefi 1200 puan olarak belirlenmiştir.
-    * Sprint 1, Perisentez uygulamasının **Minimum Uygulanabilir Ürün (MVP)** aşamasını oluşturduğu için 300 puanlık bir ağırlık verilmiştir.
-    * Bu sprintin ana odak noktaları; projenin fikir aşamasını netleştirmek, ürün özelliklerini detaylandırmak ve temel fonksiyonelliği içeren **çalışır bir prototip (`perisentez.py`)** geliştirmek olmuştur.
-    * Kullanıcı arayüzünün Streamlit ile kodlanması, temel veri giriş mekanizmalarının oluşturulması, kural tabanlı eşleştirme algoritmasının uygulanması ve çıktıların gösterilmesi gibi görevlerin başarıyla tamamlanmasıyla 300 puanlık hedefe ulaşılmıştır.
-    * Toplam 1200 puanlık genel hedefin geri kalan dağılımı şu şekildedir: İkinci sprintte kod yazımına ve API entegrasyonlarına odaklanılacağı için 450 puan, üçüncü sprintte ise kalan görevlerin tamamlanması ve entegrasyon çalışmalarına ayrılacağı için yine 450 puan hedeflenmiştir.
+- **Kullanıcı adı:** `ege`  
+- **Şifre:** `1234`  
+- veya kayıt olarak giriş yapabilirsiniz.
 
 ---
 
-### Günlük Scrumlar
+# 📌 Sprint 1
 
-* **Sprint 1 Günlük Scrum Özeti:** Günlük scrum toplantıları, takım üyelerinin mevcut ilerlemelerini paylaşmaları, karşılaşılan engelleri tartışmaları ve bir sonraki günün görevlerini belirlemeleri amacıyla düzenli olarak yapılmıştır. Hızlı iletişim ve görev takibi için WhatsApp grubu kullanılırken, daha detaylı tartışmalar ve ekran paylaşımı gerektiren konular için Google Meet tercih edilmiştir.
+## Sprint Amacı
+Minimum Uygulanabilir Ürün (MVP) geliştirilmesi: temel veri girişi, kural tabanlı risk hesaplama ve prototip arayüz.
 
----
+## Sprint Notları
+- **UI Tasarımları:** Streamlit kütüphanesi ile doğrudan kodlandı.  
+- **Proje Yönetimi:** Trello ile takip edildi.  
+- **Günlük Scrum Toplantıları:** WhatsApp + Google Meet.  
+- **Uygulama Teması:** Koyu (dark).  
+- **Dil:** Türkçe.  
 
+## Beklenen Puan Tamamlama
+- **Sprint 1 Hedefi:** 300 Puan  
+- **Puan Tamamlama Mantığı:**  
+  - Projenin genel hedefi 1200 puan.  
+  - Sprint 1 → MVP: 300 puan  
+  - Sprint 2 → Model & entegrasyon: 450 puan  
+  - Sprint 3 → Son geliştirmeler & teslim: 450 puan  
+- **Tamamlanan:** 300 Puan ✅ (Tam Puan)  
 
-### Sprint Değerlendirmesi (Sprint Review)
+## Günlük Scrumlar
+- Günlük ilerleme paylaşımları WhatsApp üzerinden, detaylı tartışmalar Google Meet ile yapıldı.
 
-* **Tamamlanan İşler:**
-    * **Fetal Bulguların Arayüzden Girişi:** Kullanıcı arayüzünde, gebelik haftası, NT, FL, beta-hCG MoM, PAPP-A MoM gibi sayısal prenatal değerler ve önemli yapısal anomaliler (hard marker'lar) için seçim kutuları (checkbox'lar) aracılığıyla veri giriş alanları başarıyla oluşturulmuştur.
-    * **Kural Tabanlı Sendrom Risk Değerlendirmesi:** Girilen sayısal veriler ve seçilen yapısal bulgulara dayanarak, `sendrom.py` modülü içinde tanımlanan tıbbi kurallar ve eşikler kullanılarak olası genetik sendromların riski hesaplanmış ve bu mantık uygulamaya entegre edilmiştir. Her sendrom için "tahmini eşleşme oranı" sunulmaktadır.
-    * **Potansiyel Sendromların Sıralı Listelenmesi:** Hesaplanan eşleşme oranına göre en olası sendromlar azalan sırada listelenmekte ve her bir sendrom için ilişkili girilen bulgular açıkça belirtilerek hekime karar destekleyici bilgi sağlanmaktadır.
-    * **Açıklayıcı ve Uyarıcı Bilgilendirme:** Uygulamanın eğitim amaçlı bir prototip olduğu ve klinik karar verme sürecinin yalnızca uzman doktorlar tarafından yürütülmesi gerektiği vurgulayan uyarı ve açıklamalar arayüze entegre edilmiştir.
-* **Karşılaşılan Zorluklar ve Çıkarımlar:**
-    * Uygulamanın "Yapay Zeka Destekli Asistan Sistem" tanımını mevcut kural tabanlı MVP yapısıyla nasıl dengeleyeceğimiz üzerine ekip içi tartışmalar yaşanmıştır. İlk aşamada güçlü bir kural seti ile ilerlemenin, daha sonra gerçek AI modellerini entegre etmek için sağlam bir temel oluşturacağı kararlaştırılmıştır.
-    * Perisentez'in temel felsefesi olan "klinik karara destek" misyonu üzerinde durularak, uygulamanın bir tanı koyucu olmaktan ziyade, hekimlere bilgi ve yönlendirme sunan bir asistan görevi görmesi gerektiği vurgulanmıştır.
-    * İlk hafta, kullanıcı hikayesi ve kabul kriterleri doğrultusunda veri giriş arayüzünün ve temel kural setinin işleyişi detaylıca planlanmıştır. İkinci hafta ise Streamlit arayüzünün aktif olarak kodlanması ve risk hesaplama mantığının entegrasyonu başarıyla gerçekleştirilmiştir.
-* **Genel Değerlendirme:** Sprint 1, Perisentez projesinin temel işlevsel iskeletini oluşturarak, fikrin çalışır bir prototipe dönüşümü açısından oldukça verimli ve başarılı bir süreç olmuştur.
+## Sprint Değerlendirmesi (Sprint Review)
+- ✅ Fetal bulgular girişi  
+- ✅ Kural tabanlı risk analizi  
+- ✅ Sendrom sıralama  
+- ✅ Açıklayıcı bilgilendirme  
 
-* **Sprint Değerlendirmesi Katılımcıları:**
-    * Feyza Hilal Şahin (Product Owner)
-    * Fevzi Ege Yurtsevenler (Scrum Master)
-    * Sena Açıkgöz (Developer)
-    * Semanur Büdün (Developer)
-    * Tarık Anafarta (Developer)
-  
----
+**Karşılaşılan Zorluklar ve Çıkarımlar**
+- AI tanımını MVP kural tabanlı sistemle dengeleme tartışıldı.  
+- Klinik karara destek misyonu vurgulandı.  
 
-### Ekran Görüntüleri ve Kullanım Videosu
+**Sprint Değerlendirmesi Katılımcıları**
+- Feyza Hilal Şahin  
+- Fevzi Ege Yurtsevenler  
+- Sena Açıkgöz  
+- Semanur Büdün  
+- Tarık Anafarta  
 
-Uygulama ve daily scrumlar ile ilgili ekran görüntüleri ve kullanım videosu:
-
+## Ekran Görüntüleri ve Kullanım Videosu
 [Ekran Görüntüleri Albümü](https://imgur.com/a/Bc1tRcg)
 
+## Sprint Retrospektifi
+- Firebase araştırılması  
+- Logo & marka kimliği oluşturulması  
+- AI API entegrasyonu planlanması  
 
 ---
 
-### Sprint Retrospektifi
+# 📌 Sprint 2
 
-* **İkinci Sprint için Kararlar ve İyileştirmeler:**
-    * Daha kapsamlı veri yönetimi ve gelecekteki olası yapay zeka modelleri için **Firebase gibi bir backend çözümünün** araştırılmasına ve entegre edilmesine öncelik verilmesine karar verildi.
-    * Uygulamanın **logosunun ve genel marka kimliğinin** kesinleştirilmesi planlandı.
-    * İkinci sprintte tüm takım üyelerinin **kod geliştirme süreçlerine daha aktif ve eş zamanlı olarak katılmasına** karar verildi.
-    * Yapay zeka eklentisi için uygulamaya uygun, **ücretsiz veya uygun maliyetli API'lerin araştırılması** yapılacak (özellikle daha gelişmiş bulgu eşleştirme veya açıklayıcı AI modelleri için).
-    * Klinik raporların daha kullanıcı dostu olması ve hekimler arası paylaşılabilirliğini artırmak amacıyla **PDF formatında risk raporu dışa aktarma** özelliğinin araştırılmasına karar verildi.
-    * Sendromlara ilişkin **ICD kodları** ve **daha detaylı fenotip tanımlarının** (her sendrom için açıklayıcı bilgiler) veri tabanına eklenmesi ve arayüzde gösterilmesi üzerine çalışılacak.
-    * Gelecek sprintlerde, sayısal bulguların gebelik haftasına göre daha dinamik ve yaşa özgü değerlendirilmesi gibi algoritmik iyileştirmelerin araştırılmasına karar verildi.
+## Sprint Amacı
+MVP üzerine makine öğrenmesi modeli, hasta geçmişi yönetimi, PDF raporlama ve yapay zekâ açıklama modülü ekleyerek klinik kullanıma daha uygun hale getirmek.
 
----
-
-# Sprint 2
-
-### 📌 Sprint Amacı
-Sprint 2’nin amacı, MVP olarak çalışan kural tabanlı sistemin üzerine **makine öğrenmesi modeli**, **hasta geçmişi yönetimi**, **PDF raporlama** ve **yapay zeka açıklamaları** ekleyerek ürünü klinik kullanıma daha uygun hale getirmekti.
-
----
-
-### ✅ Tamamlanan İşler
-
+## Sprint Notları
 - 🔍 **Makine Öğrenmesi Modeli Entegrasyonu**  
-  ...
-- 🧠 **Yapay Zeka Yorumlayıcı**
-  ...
-- 📄 **PDF Raporlama Özelliği**
-  ...
-- 💾 **SQLite Hasta Veritabanı**
-  ...
-- 🔐 **Giriş / Kayıt Sistemi**
-  ...
+- 🧠 **Yapay Zekâ Yorumlayıcı Modül**  
+- 📄 **PDF Raporlama Özelliği**  
+- 💾 **SQLite Hasta Veritabanı**  
+- 🔐 **Giriş / Kayıt Sistemi**  
 - 🗂️ **Hasta Geçmişi Paneli**
-  ...
 
----
+## Beklenen Puan Tamamlama
+- **Sprint 2 Hedefi:** 450 Puan  
+- **Tamamlanan Tahmini Puan:** 470 Puan ✅  
+- **Dağılım:**  
+  - ML modeli + veri yönetimi: 200 puan  
+  - PDF raporlama + grafikler: 120 puan  
+  - Kullanıcı yönetimi + geçmiş: 100 puan  
+  - Bonus (AI açıklama modülü & görsel iyileştirme): 50 puan  
 
-### 🧩 Karşılaşılan Zorluklar ve Çıkarımlar
+## Günlük Scrumlar
+- WhatsApp + Google Meet  
+- PDF ve AI modülü canlı demo ile test edildi  
 
-- SQLite ile kullanıcı bazlı veri ayırma sırasında dosya izinleri ve platform farkları dikkate alındı.
-- Streamlit Cloud üzerinde **kalıcı dosya saklama desteği olmaması** sebebiyle SQLite entegrasyonu özellikle tercih edildi.
-- Yapay zekâ açıklamalarının **tıbbi olarak yanıltıcı olmaması** için açıklamalar sade ve veri temelli tutuldu.
-
----
-
-### 🧪 Günlük Scrumlar
-
-- Scrum toplantıları yine WhatsApp + Google Meet üzerinden yapıldı.
-- Her üye kendi geliştirdiği modülü takım arkadaşlarına canlı olarak göstererek entegre etti.
-- PDF çıktısı, yorumlayıcı yapay zekâ fonksiyonu gibi modüller demo ortamında test edildi.
-
----
-
-### 📈 Puanlandırma
-
-- **Sprint 2 Hedefi:** 450 Puan
-- **Tamamlanan Tahmini Puan:** 470 Puan
-- **Açıklama:**
-  - ML modeli + veri yönetimi (200 puan)
-  - PDF raporlama + grafikler (120 puan)
-  - Kullanıcı yönetimi + geçmiş (100 puan)
-  - Bonus: Yapay zekâ açıklayıcı modül + görsel iyileştirme (50 puan)
-
----
-
-### Ekran Görüntüleri 
-
-Daily scrumlar ile ilgili ekran görüntüleri:
-
+## Ekran Görüntüleri
 [Ekran Görüntüleri Albümü](https://imgur.com/a/wUub993)
 
----
-
-### 🔁 Sprint Retrospektifi
-
-- **İyileşen Noktalar:**
-  - Kullanıcı verisi artık **kalıcı**, güvenli ve kullanıcıya özel.
-  - Sistem, sadece sonuç değil artık **neden** sorusuna da yanıt veriyor.
-  - UI/UX gözle görülür biçimde gelişti.
-- **İleriye Yönelik Kararlar:**
-  - 3. sprintte kullanıcı dostu dashboard, filtreleme, çoklu hasta seçimi gibi gelişmiş UI özellikleri eklenmesi planlanıyor.
-  - E-posta ile PDF gönderimi ve rapor paylaşımı için altyapı tasarlanacak.
-
----
-
-### 📌 Genel Değerlendirme
-
-Sprint 2, Perisentez projesini MVP seviyesinden çıkarıp klinik kullanıma daha uygun bir hale getirmiştir. Özellikle PDF çıktısı, yapay zekâ açıklamaları ve hasta geçmişinin kalıcı tutulması sayesinde sistem artık sadece bir tahmin aracı değil, profesyonel bir klinik yardımcı sistemdir.
+## Sprint Retrospektifi
+- Veriler kalıcı ve güvenli hale geldi  
+- Sistem neden-sonuç ilişkilerini açıklıyor  
+- UI/UX geliştirildi  
 
 ---
 
 # 📌 Sprint 3
 
 ## Sprint Amacı
-Sprint 3’ün amacı, Perisentez sistemini klinik kullanım için daha güvenilir, açıklayıcı ve kullanıcı dostu hale getirmekti.  
-Bu sprintte yapay zekâ tabanlı yorumlayıcıların entegrasyonu, raporlama sisteminin modernleştirilmesi ve kullanıcı deneyimi odaklı iyileştirmeler yapıldı.  
+AI entegrasyonu, HTML raporlama ve kullanıcı deneyimi iyileştirmeleriyle ürünü klinik kullanıma hazır hale getirmek.
 
----
+## Sprint Notları
+- 📄 PDF yerine **HTML raporlama sistemi**  
+- 🤖 **Gemini Pro & GPT-3.5 Turbo chatbot entegrasyonu**  
+- 🧠 **Geliştirilmiş yapay zekâ açıklama modülü**  
+- 🎨 **UI iyileştirmeleri** (risk etiketleri, modern tasarım)  
+- 💾 **SQLite hasta geçmişi ve güvenlik**
 
-## ✅ Tamamlanan İşler
-
-### 📄 HTML Raporlama Sistemi
-- PDF yerine daha uyumlu ve güvenilir **HTML raporları** üretildi.  
-- Raporlar modern CSS ile tasarlandı, risk seviyeleri görsel olarak vurgulandı.  
-- İndirilebilir ve paylaşılabilir rapor çıktıları oluşturuldu.  
-
-### 🤖 Yapay Zekâ Destekli Chatbot
-- Google **Gemini Pro** ve OpenAI **GPT-3.5 Turbo** entegrasyonu yapıldı.  
-- Hekimler, doğrudan uygulama içinden medikal danışmanlık alabilir hale geldi.  
-- Chatbot, prenatal genetik sendromlarla ilgili sorulara tıbbi bilgilendirme yapıyor.  
-
-### 🧠 Geliştirilmiş AI Açıklama Modülü
-- Analiz edilen bulgular için neden-sonuç ilişkisi detaylı açıklamalar halinde sunuldu.  
-- Kullanıcıya özel, risk faktörlerini belirten yorumlar rapora eklendi.  
-
-### 🎨 Kullanıcı Deneyimi İyileştirmeleri
-- Risk seviyeleri için renk kodlu etiketler eklendi (⚠️ yüksek risk, ⚡ orta risk, ✅ düşük risk).  
-- Raporlarda hasta bilgileri, sonuçlar ve yorumlar bölümlere ayrıldı.  
-- Arayüzde modern tasarım prensipleri uygulandı.  
-
-### 💾 Veri Güvenliği ve Yönetimi
-- SQLite tabanlı hasta kayıt sistemi güvenli hale getirildi.  
-- Kullanıcı bazlı hasta geçmişi yönetimi sürdürüldü.  
-
----
-
-## 🧪 Günlük Scrumlar
-- Günlük scrum toplantıları yine WhatsApp grubu ve Google Meet üzerinden gerçekleştirildi.  
-- Özellikle chatbot ve raporlama modülü, takım üyelerinin canlı demo ve kod paylaşımıyla entegre edildi.  
-- Kullanıcı deneyimi testleri yapılarak hata ayıklamalar gerçekleştirildi.  
-
----
-
-## 📈 Puanlandırma
+## Beklenen Puan Tamamlama
 - **Sprint 3 Hedefi:** 450 Puan  
-- **Tamamlanan Tahmini Puan:** 480 Puan  
+- **Tamamlanan Tahmini Puan:** 480 Puan ✅  
+- **Dağılım:**  
+  - HTML raporlama + modern UI: 150 puan  
+  - Gemini & GPT entegrasyonu: 150 puan  
+  - Yapay zekâ açıklama modülü: 100 puan  
+  - Güvenlik & hasta geçmişi: 80 puan  
 
-**Dağılım:**  
-- HTML raporlama ve modern UI geliştirmeleri: 150 puan  
-- Gemini & GPT entegrasyonu: 150 puan  
-- Yapay zekâ açıklama modülü: 100 puan  
-- Güvenlik ve hasta geçmişi yönetimi: 80 puan  
+## Günlük Scrumlar
+- WhatsApp + Google Meet  
+- Chatbot ve HTML raporlama modülü canlı test edildi  
 
----
-## 🔁 Sprint Retrospektifi
-
-### İyileşen Noktalar
-- HTML raporlama sayesinde rapor çıktıları daha güvenilir ve paylaşılabilir hale geldi.  
-- Yapay zekâ entegrasyonu, kullanıcıya bilgi desteği sunarak sistemi benzersiz kıldı.  
-- Risk analizleri artık görsel olarak daha anlaşılır.  
+## Sprint Retrospektifi
+- HTML raporlama güvenilir çıktı sağladı  
+- Yapay zekâ entegrasyonu sistemi benzersiz kıldı  
+- Risk analizleri görsel olarak daha anlaşılır hale geldi  
+- Uygulama klinik kullanıma hazır hale getirildi  
 
 ---
 
 ## 📌 Genel Değerlendirme
-Sprint 3 ile birlikte Perisentez, yalnızca kural tabanlı bir prototip olmaktan çıkıp,  
-**AI destekli açıklamalar, modern raporlama ve güvenli veri yönetimi** ile klinik pratikte kullanılabilecek düzeye gelmiştir.  
+Sprint 1’den Sprint 3’e kadar Perisentez; basit bir prototipten çıkıp **AI destekli açıklamalar, modern HTML raporlama ve güvenli hasta verisi yönetimi** ile klinik pratikte kullanılabilecek düzeyde bir **karar destek sistemi** haline gelmiştir. 🚀
 
-Bu sprintin sonunda sistem, uzman hekimlere karar desteği sunan, kullanıcı dostu ve yapay zekâ ile zenginleştirilmiş bir klinik yardımcı platform haline gelmiştir. 🚀
