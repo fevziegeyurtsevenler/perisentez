@@ -225,3 +225,7 @@ AI entegrasyonu, HTML raporlama ve kullanıcı deneyimi iyileştirmeleriyle ür�
 ## 📌 Genel Değerlendirme
 Sprint 1’den Sprint 3’e kadar Perisentez; basit bir prototipten çıkıp **AI destekli açıklamalar, modern HTML raporlama ve güvenli hasta verisi yönetimi** ile klinik pratikte kullanılabilecek düzeyde bir **karar destek sistemi** haline gelmiştir. 🚀
 
+
+## Lisans
+
+Bu repo [Apache-2.0](LICENSE) ile lisanslıdır.
